@@ -7,6 +7,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net;
+using System.Windows.Forms;
 
 namespace MediaTekDocuments.dal
 {
@@ -159,7 +160,7 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Retourne toutes les commandes de livres ou dvd à partir de la BDD
+        /// Retourne toutes les commandes d'un livres ou dvd à partir de la BDD
         /// </summary>
         /// <returns>Liste d'objets Revue</returns>
         public List<CommandeDocument> GetAllComDoc(string idLivreDvd)
