@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using MediaTekDocuments.model;
 using MediaTekDocuments.dal;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.Windows.Forms;
 
 namespace MediaTekDocuments.controller
 {
@@ -76,15 +80,34 @@ namespace MediaTekDocuments.controller
             return access.GetAllPublics();
         }
 
+        ///<summary>
+        /// getter sur les suivis
+        ///</summary>
+        ///<returns>Liste d'objets Suivi</returns>
+        public List<Suivi> GetAllSuivis()
+        {
+            return access.GetAllSuivis();
+        }
+
 
         /// <summary>
         /// récupère les exemplaires d'une revue
         /// </summary>
         /// <param name="idDocuement">id de la revue concernée</param>
         /// <returns>Liste d'objets Exemplaire</returns>
-        public List<Exemplaire> GetExemplairesRevue(string idDocuement)
+        public List<Exemplaire> GetExemplairesRevue(string idDocument)
         {
-            return access.GetExemplairesRevue(idDocuement);
+            return access.GetExemplairesRevue(idDocument);
+        }
+
+        /// <summary>
+        /// récupère les commandes d'un document
+        /// </summary>
+        /// <param name="idLivreDvd">id de la revue concernée</param>
+        /// <returns>Liste d'objets Exemplaire</returns>
+        public List<CommandeDocument> GetCommandeDocument(string idLivreDvd)
+        {
+            return access.GetAllComDoc(idLivreDvd);
         }
 
         /// <summary>
@@ -96,5 +119,36 @@ namespace MediaTekDocuments.controller
         {
             return access.CreerExemplaire(exemplaire);
         }
+
+        /// <summary>
+        /// Crée une commande de document dans la bdd
+        /// </summary>
+        /// <param name="commandeDoc">L'objet Exemplaire concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public bool CreerCommandeDocument( CommandeDocument commandeDoc)
+        {
+            return access.CreerCommandeDoc(commandeDoc);
+        }
+
+        // <summary>
+        /// Modifier une commande de document dans la bdd
+        /// </summary>
+        /// <param name="commandeDoc">L'objet commandedocument concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public bool UpdateCommandeDocument(CommandeDocument commandeDoc)
+        {
+            return access.UpdateEntite("commandedocument", commandeDoc.Id, JsonConvert.SerializeObject(commandeDoc));
+        }
+
+        public bool DeleteCommandeDoc(CommandeDocument commande)
+        {
+            return access.DeleteCommande(commande);
+        }
+
+        public string GetMaxIdCommande()
+        {
+            return access.GetMaxIndex();
+        }
+
     }
 }

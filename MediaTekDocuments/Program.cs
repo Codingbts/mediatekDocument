@@ -15,6 +15,7 @@ namespace MediaTekDocuments
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new FrmMediatek());
+           
         }
     }
 }

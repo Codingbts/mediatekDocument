@@ -5,8 +5,8 @@ using MediaTekDocuments.manager;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using System.Configuration;
-using System.Linq;
+using System.Net.Http;
+using System.Net;
 
 namespace MediaTekDocuments.dal
 {
@@ -37,6 +37,13 @@ namespace MediaTekDocuments.dal
         private const string POST = "POST";
         /// <summary>
         /// méthode HTTP pour update
+        /// 
+        private const string PUT = "PUT";
+
+        /// <summary>
+        /// méthode HTTP pour delete
+        /// 
+        private const string DELETE = "DELETE";
 
         /// <summary>
         /// Méthode privée pour créer un singleton
@@ -101,6 +108,16 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// Retourne toutes les Suivis de public à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Public</returns>
+        public List<Suivi> GetAllSuivis()
+        {
+            IEnumerable<Suivi> lesSuivis = TraitementRecup<Suivi>(GET, "suivi", null);
+            return new List<Suivi>(lesSuivis);
+        }
+
+        /// <summary>
         /// Retourne toutes les livres à partir de la BDD
         /// </summary>
         /// <returns>Liste d'objets Livre</returns>
@@ -130,6 +147,27 @@ namespace MediaTekDocuments.dal
             return lesRevues;
         }
 
+        /// <summary>
+        /// Retourne l'index max en string
+        /// de certaines tables
+        /// </summary>
+        /// <returns></returns>
+        public string GetMaxIndex()
+        {
+             List<Categorie> maxindex = TraitementRecup<Categorie>(GET, "commandemax", null);
+             return maxindex[0].Id;
+        }
+
+        /// <summary>
+        /// Retourne toutes les commandes de livres ou dvd à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Revue</returns>
+        public List<CommandeDocument> GetAllComDoc(string idLivreDvd)
+        {
+            String jsonIdLivreDvd = convertToJson("idLivreDvd", idLivreDvd);
+            List<CommandeDocument> lesComDoc = TraitementRecup<CommandeDocument>(GET, "commandedocument/" + jsonIdLivreDvd, null);
+            return lesComDoc;
+        }
 
         /// <summary>
         /// Retourne les exemplaires d'une revue
@@ -163,6 +201,69 @@ namespace MediaTekDocuments.dal
             return false;
         }
 
+        /// <summary>
+        /// ecriture d'une commande de document en base de données
+        /// </summary>
+        /// <param name="commandeDoc">Commande du document à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool CreerCommandeDoc(CommandeDocument commandeDoc)
+        {
+            String jsonCommandeDoc = JsonConvert.SerializeObject(commandeDoc, new CustomDateTimeConverter());
+            try
+            {
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(POST, "commandedocument", "champs=" + jsonCommandeDoc);
+                Console.WriteLine("Réponse du serveur : " + JsonConvert.SerializeObject(liste));
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Modifie une entite dans la BDD, return true si l'opération, c'est correctement déroulé
+        /// </summary>
+        /// /// <param name="type"></param>
+        /// <param name="id"></param>
+        /// <param name="jsonEntite"></param>
+        /// <returns></returns>
+        public bool UpdateEntite(string type, string id, string jsonEntite)
+        {
+            try
+            {
+                string encodedContent = Uri.EscapeDataString(jsonEntite);
+                string fullBody = "champs=" + encodedContent;
+                List<Object> liste = TraitementRecup<Object>(PUT, type + "/" + id, fullBody);
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        public bool DeleteCommande(CommandeDocument comm)
+        {
+            try
+            {
+                String jsonCommandeDelete = JsonConvert.SerializeObject(comm);
+                List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "commandedocument" + "/" + jsonCommandeDelete, null);
+                Console.WriteLine("Réponse du serveur : " + JsonConvert.SerializeObject(liste));
+                return true;
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            
+            return false;
+        }
+
+       
         /// <summary>
         /// Traitement de la récupération du retour de l'api, avec conversion du json en liste pour les select (GET)
         /// </summary>
