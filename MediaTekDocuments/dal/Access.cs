@@ -193,6 +193,18 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// Retourne les exemplaires d'une revue
+        /// </summary>
+        /// <param name="idDocument">id de la revue concernée</param>
+        /// <returns>Liste d'objets Exemplaire</returns>
+        public List<Utilisateur> GetUtilisateur(string login)
+        {
+            String jsonLogin = convertToJson("login", login);
+            List<Utilisateur> recupUtili = TraitementRecup<Utilisateur>(GET, "utilisateur/" + jsonLogin, null);
+            return recupUtili;
+        }
+
+        /// <summary>
         /// ecriture d'un exemplaire en base de données
         /// </summary>
         /// <param name="exemplaire">exemplaire à insérer</param>

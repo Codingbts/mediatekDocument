@@ -119,7 +119,15 @@
     <Compile Include="model\Abonnement.cs" />
     <Compile Include="model\Commande.cs" />
     <Compile Include="model\CommandeDocument.cs" />
+    <Compile Include="model\Service.cs" />
     <Compile Include="model\Suivi.cs" />
+    <Compile Include="model\Utilisateur.cs" />
+    <Compile Include="view\FormLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="view\FormLogin.Designer.cs">
+      <DependentUpon>FormLogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="view\FrmMediatek.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -148,6 +156,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="view\FormLogin.resx">
+      <DependentUpon>FormLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="view\FrmMediatek.resx">
       <DependentUpon>FrmMediatek.cs</DependentUpon>
     </EmbeddedResource>

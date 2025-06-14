@@ -3881,6 +3881,7 @@ namespace MediaTekDocuments.view
             this.tabOngletsApplication.SelectedIndex = 0;
             this.tabOngletsApplication.Size = new System.Drawing.Size(1177, 972);
             this.tabOngletsApplication.TabIndex = 0;
+            this.tabOngletsApplication.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabOnglets_Selecting);
             this.tabOngletsApplication.Click += new System.EventHandler(this.tabComDVD_Click);
             this.tabOngletsApplication.Enter += new System.EventHandler(this.tabComDvd_Enter);
             // 

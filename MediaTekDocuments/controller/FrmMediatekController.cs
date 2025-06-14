@@ -100,6 +100,11 @@ namespace MediaTekDocuments.controller
             return access.GetExemplairesRevue(idDocument);
         }
 
+        public List<Utilisateur> GetUtilisateur(string login)
+        {
+            return access.GetUtilisateur(login);
+        }
+
         /// <summary>
         /// récupère les commandes d'un document
         /// </summary>

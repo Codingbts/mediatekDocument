@@ -29,17 +29,32 @@ namespace MediaTekDocuments.view
         private int ancienneEtapeSuivi;
         private bool modifBool = false;
         private bool msgBoxSuivi = true;
+        private string serviceUtili;
+
 
 
 
         /// <summary>
         /// Constructeur : création du contrôleur lié à ce formulaire
         /// </summary>
-        internal FrmMediatek()
+        internal FrmMediatek(string serviceUtili)
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
+            this.serviceUtili = serviceUtili;
             VerifTempsAbo();
+        }
+
+        private void tabOnglets_Selecting(object sender, TabControlCancelEventArgs e)
+        {
+            if (serviceUtili == "pret")
+            {
+                if (e.TabPage == tabComLivres || e.TabPage == tabComDvd || e.TabPage == tabComRevues || e.TabPage == tabReceptionRevue)
+                {
+                    MessageBox.Show("Vos droits ne sont pas suffisant pour accéder à ces onglets !");
+                    e.Cancel = true;
+                }
+            }
         }
 
         /// <summary>
@@ -3214,40 +3229,39 @@ namespace MediaTekDocuments.view
         {
             return dateParution >= dateCommande && dateParution <= DateFinAbonnement; 
         }
-        
-        private void VerifTempsAbo()
+
+        public void VerifTempsAbo()
         {
-            bool moins30j = false;
-            List<Revue> getRevues = controller.GetAllRevues();
-            string msg30 = "Les abonnement qui expire dans moins de 30 jours sont : \n \n";
-            List<(string Titre, DateTime DateFin)> revuesExpire = new();
-
-            foreach (Revue revue in getRevues)
+            if (serviceUtili == "administrateur" || serviceUtili == "administratif")
             {
-                List<Abonnement> getAboRevue = controller.GetCommandeRevue(revue.Id);
-                foreach(Abonnement abo in getAboRevue)
+                bool moins30j = false;
+                List<Revue> getRevues = controller.GetAllRevues();
+                string msg30 = "Les abonnement qui expire dans moins de 30 jours sont : \n \n";
+
+                foreach (Revue revue in getRevues)
                 {
-                    DateTime dateCommande = abo.DateCommande;
-                    DateTime dateFinAbonnement = abo.DateFinAbonnement;
-
-                    TimeSpan tmpsRestant = dateFinAbonnement - DateTime.Today;
-
-                    if (tmpsRestant.Days <= 30 && tmpsRestant.Days >=0)
+                    List<Abonnement> getAboRevue = controller.GetCommandeRevue(revue.Id);
+                    foreach (Abonnement abo in getAboRevue)
                     {
-                        msg30 += "titre : " + revue.Titre + " date de fin d'abonnement : " + abo.DateFinAbonnement + "\n";
-                        moins30j = true;
+                        DateTime dateCommande = abo.DateCommande;
+                        DateTime dateFinAbonnement = abo.DateFinAbonnement;
+
+                        TimeSpan tmpsRestant = dateFinAbonnement - DateTime.Today;
+
+                        if (tmpsRestant.Days <= 30 && tmpsRestant.Days >= 0)
+                        {
+                            msg30 += "titre : " + revue.Titre + " date de fin d'abonnement : " + abo.DateFinAbonnement + "\n";
+                            moins30j = true;
+                        }
                     }
                 }
-            }
 
-            if(moins30j == true)
-            {
-                MessageBox.Show(msg30);
+                if (moins30j == true)
+                {
+                    MessageBox.Show(msg30);
+                }
             }
         }
-
-
-
         #endregion
     }
 }
