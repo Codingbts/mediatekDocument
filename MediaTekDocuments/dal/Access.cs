@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Net;
 using System.Windows.Forms;
+using System.Configuration;
 
 namespace MediaTekDocuments.dal
 {
@@ -19,7 +20,7 @@ namespace MediaTekDocuments.dal
         /// <summary>
         /// adresse de l'API
         /// </summary>
-        private static readonly string uriApi = "http://localhost/rest_mediatekdocuments/";
+        private static readonly string uriApi = "MediaTekDocuments.Properties.Settings.MediatTelDocumentsURIConnectionString";
         /// <summary>
         /// instance unique de la classe
         /// </summary>
@@ -47,22 +48,45 @@ namespace MediaTekDocuments.dal
         private const string DELETE = "DELETE";
 
         /// <summary>
+        /// nom de connexion à la bdd
+        /// </summary>
+        private static readonly string authenticationString = "MediaTekDocuments.Properties.Settings.MediatTelDocumentsConnectionString";
+
+
+        /// <summary>
         /// Méthode privée pour créer un singleton
         /// initialise l'accès à l'API
         /// </summary>
         private Access()
         {
-            String authenticationString;
+            String getUriApi = GetConnectionStringByName(uriApi);
+            string getAuthenticationString = GetConnectionStringByName(authenticationString);
             try
             {
-                authenticationString = "admin:adminpwd";
-                api = ApiRest.GetInstance(uriApi, authenticationString);
+                api = ApiRest.GetInstance(getUriApi, getAuthenticationString);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 Environment.Exit(0);
             }
+
+        }
+
+
+
+        /// <summary>
+        /// Récupération de la chaîne de connexion
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        static string GetConnectionStringByName(string name)
+        {
+            string returnValue = null;
+            ConnectionStringSettings settings = ConfigurationManager.ConnectionStrings[name];
+            if (settings != null)
+                returnValue = settings.ConnectionString;
+            return returnValue;
         }
 
         /// <summary>
