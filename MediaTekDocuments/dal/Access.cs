@@ -170,6 +170,16 @@ namespace MediaTekDocuments.dal
             return lesComDoc;
         }
 
+        /// Retourne toutes les commandes d'une revue à partir de la BDD
+        /// </summary>
+        /// <returns>Liste d'objets Revue</returns>
+        public List<Abonnement> GetAllComRevue(string idRevue)
+        {
+            String jsonIdRevue = convertToJson("idRevue", idRevue);
+            List<Abonnement> lesComRevue = TraitementRecup<Abonnement>(GET, "abonnement/" + jsonIdRevue, null);
+            return lesComRevue;
+        }
+
         /// <summary>
         /// Retourne les exemplaires d'une revue
         /// </summary>
@@ -224,6 +234,27 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
+        /// ecriture d'une commande de document en base de données
+        /// </summary>
+        /// <param name="commandeDoc">Commande du document à insérer</param>
+        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        public bool CreerAbonnement(Abonnement abonnement)
+        {
+            String jsonAbonnement= JsonConvert.SerializeObject(abonnement, new CustomDateTimeConverter());
+            try
+            {
+                List<Abonnement> liste = TraitementRecup<Abonnement>(POST, "abonnement", "champs=" + jsonAbonnement);
+                Console.WriteLine("Réponse du serveur : " + JsonConvert.SerializeObject(liste));
+                return (liste != null);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Modifie une entite dans la BDD, return true si l'opération, c'est correctement déroulé
         /// </summary>
         /// /// <param name="type"></param>
@@ -264,7 +295,27 @@ namespace MediaTekDocuments.dal
             return false;
         }
 
-       
+        public bool DeleteAbonnement(Abonnement abo)
+        {
+            try
+            {
+                String jsonAbonnementDelete = JsonConvert.SerializeObject(abo);
+                List<Abonnement> liste = TraitementRecup<Abonnement>(DELETE, "abonnement" + "/" + jsonAbonnementDelete, null);
+                Console.WriteLine("Réponse du serveur : " + JsonConvert.SerializeObject(liste));
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return false;
+        }
+
+
+        /// <summary>
+
         /// <summary>
         /// Traitement de la récupération du retour de l'api, avec conversion du json en liste pour les select (GET)
         /// </summary>

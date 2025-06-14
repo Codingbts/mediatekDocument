@@ -103,11 +103,21 @@ namespace MediaTekDocuments.controller
         /// <summary>
         /// récupère les commandes d'un document
         /// </summary>
-        /// <param name="idLivreDvd">id de la revue concernée</param>
+        /// <param name="idLivreDvd">id du document concernée</param>
         /// <returns>Liste d'objets Exemplaire</returns>
         public List<CommandeDocument> GetCommandeDocument(string idLivreDvd)
         {
             return access.GetAllComDoc(idLivreDvd);
+        }
+
+        /// <summary>
+        /// récupère les commandes d'une revue
+        /// </summary>
+        /// <param name="idRevue">id de la revue concernée</param>
+        /// <returns>Liste d'objets Exemplaire</returns>
+        public List<Abonnement> GetCommandeRevue(string idRevue)
+        {
+            return access.GetAllComRevue(idRevue);
         }
 
         /// <summary>
@@ -130,6 +140,16 @@ namespace MediaTekDocuments.controller
             return access.CreerCommandeDoc(commandeDoc);
         }
 
+        /// <summary>
+        /// Crée une commande de revye dans la bdd
+        /// </summary>
+        /// <param name="commandeDoc">L'objet Exemplaire concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public bool CreerAbonnement(Abonnement abonnement)
+        {
+            return access.CreerAbonnement(abonnement);
+        }
+
         // <summary>
         /// Modifier une commande de document dans la bdd
         /// </summary>
@@ -140,11 +160,25 @@ namespace MediaTekDocuments.controller
             return access.UpdateEntite("commandedocument", commandeDoc.Id, JsonConvert.SerializeObject(commandeDoc));
         }
 
+        // <summary>
+        /// Modifier une commande de revue dans la bdd
+        /// </summary>
+        /// <param name="commandeDoc">L'objet commandedocument concerné</param>
+        /// <returns>True si la création a pu se faire</returns>
+        public bool UpdateAbonnement(Abonnement abonnement)
+        {
+            return access.UpdateEntite("abonnement", abonnement.Id, JsonConvert.SerializeObject(abonnement));
+        }
+
         public bool DeleteCommandeDoc(CommandeDocument commande)
         {
             return access.DeleteCommande(commande);
         }
 
+        public bool DeleteAbonnement(Abonnement abonnement)
+        {
+            return access.DeleteAbonnement(abonnement);
+        }
         public string GetMaxIdCommande()
         {
             return access.GetMaxIndex();

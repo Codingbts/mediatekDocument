@@ -24,6 +24,7 @@ namespace MediaTekDocuments.view
         private bool ajouterBool = false;
         private bool supprComLivre = false;
         private bool supprComDVD = false;
+        private bool supprComRevue = false;
         private bool bloquerGesEtape = false;
         private int ancienneEtapeSuivi;
         private bool modifBool = false;
@@ -38,6 +39,7 @@ namespace MediaTekDocuments.view
         {
             InitializeComponent();
             this.controller = new FrmMediatekController();
+            VerifTempsAbo();
         }
 
         /// <summary>
@@ -2635,7 +2637,6 @@ namespace MediaTekDocuments.view
             GestionCbxSuivi(nvEtape);
         }
 
-
         #endregion
 
 
@@ -2643,6 +2644,7 @@ namespace MediaTekDocuments.view
 
         #region Onglet CommandeRevues
         private readonly BindingSource bdgComRevuesListe = new BindingSource();
+        private readonly BindingSource bdgComUneRevue = new BindingSource();
         private List<Revue> lesComRevues = new List<Revue>();
 
         /// <summary>
@@ -2658,6 +2660,7 @@ namespace MediaTekDocuments.view
             RemplirComboCategorie(controller.GetAllPublics(), bdgPublics, cbxComRevuesPublics);
             RemplirComboCategorie(controller.GetAllRayons(), bdgRayons, cbxComRevuesRayons);
             RemplirComRevuesListeComplete();
+            ModifComRevue(true);
         }
 
         /// <summary>
@@ -2833,22 +2836,57 @@ namespace MediaTekDocuments.view
         /// <param name="e"></param>
         private void dgvComRevuesListe_SelectionChanged(object sender, EventArgs e)
         {
+
             if (dgvComRevuesListe.CurrentCell != null)
             {
                 try
                 {
                     Revue revue = (Revue)bdgComRevuesListe.List[bdgComRevuesListe.Position];
+                    txbRevueComNumRevue.Text = revue.Id;
                     AfficheComRevuesInfos(revue);
+
+                    List<Abonnement> comRevue = controller.GetCommandeRevue(revue.Id);
+                    RemplirComRevueDetails(comRevue);
+
+                    if (ajouterBool == true)
+                    {
+                        ModifComRevue(true);
+                        ajouterBool = false;
+                        if (comRevue.Count == 0)
+                        {
+                            txbComRevuesNumero.Text = "";
+                        }
+
+                    }
+
+                    if (supprComRevue == true)
+                    {
+                        supprComRevue = false;
+                        List<Abonnement> comAboSuppr = controller.GetCommandeRevue(revue.Id);
+                        RemplirComRevueDetails(comAboSuppr);
+                        ModifComRevue(true);
+                    }
+
+                    if (modifBool == true)
+                    {
+                        modifBool = false;
+                        List<Abonnement> comAboSuppr = controller.GetCommandeRevue(revue.Id);
+                        RemplirComRevueDetails(comAboSuppr);
+                        ModifComRevue(true);
+                    }
+
                 }
                 catch
                 {
                     VideComRevuesZones();
+
                 }
             }
             else
             {
                 VideComRevuesInfos();
             }
+
         }
 
         /// <summary>
@@ -2869,6 +2907,7 @@ namespace MediaTekDocuments.view
         private void btnComRevuesAnnulRayons_Click(object sender, EventArgs e)
         {
             RemplirComRevuesListeComplete();
+            
         }
 
         /// <summary>
@@ -2939,6 +2978,276 @@ namespace MediaTekDocuments.view
             }
             RemplirComRevuesListe(sortedList);
         }
+
+        /// <summary>
+        /// Remplit le dategrid des commandes du DVD sélectionné
+        /// </summary>
+        /// <param name="Comrevue">liste de revue</param>
+        private void RemplirComRevueDetails(List<Abonnement> Comrevue)
+        {
+            bdgComUneRevue.DataSource = Comrevue;
+            dgvComRevueUne.DataSource = bdgComUneRevue;
+            dgvComRevueUne.Columns["idRevue"].Visible = false;
+            dgvComRevueUne.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dgvComRevueUne.Columns["dateCommande"].DisplayIndex = 0;
+        }
+
+        /// <summary>
+        /// Affichage des informations de la commande du DVD sélectionné
+        /// </summary>
+        /// <param name="Comdvd">Commande du DVD</param>
+        private void AfficheComRevueUn(Abonnement Comrevue, Revue revue)
+        {
+            txbRevueComNbAbonnement.Text = Comrevue.Id;
+            dtpRevueDateCommande.Value = Comrevue.DateCommande;
+            txbRevueComMontant.Text = Comrevue.Montant.ToString();
+            dtpRevueFinAbonnement.Value = Comrevue.DateFinAbonnement;
+            if (Comrevue.IdRevue == "")
+            {
+                txbRevueComNumRevue.Text = revue.Id;
+            }
+            else
+            {
+                txbRevueComNumRevue.Text = Comrevue.IdRevue;
+            }
+        }
+
+        private void ModifComRevue(bool modif)
+        {
+            txbRevueComNbAbonnement.Enabled = false;
+            dtpRevueDateCommande.Enabled = !modif;
+            txbRevueComMontant.Enabled = !modif;
+            dtpRevueFinAbonnement.Enabled = !modif;
+            txbRevueComNumRevue.Enabled = false;
+            btnRevueComAjouter.Enabled = modif;
+            btnRevueComModifier.Enabled = modif;
+            btnRevueComSupprimer.Enabled = modif;
+            btnRevueComAnnuler.Enabled = !modif;
+            btnRevueComValider.Enabled = !modif;
+            ajouterBool = false;
+        }
+
+        private void DgvComRevueUn_SelectionChanged(object sender, EventArgs e)
+        {
+            bloquerGesEtape = true;
+
+            if (dgvComRevueUne.CurrentCell != null)
+            {
+                try
+                {
+                    Abonnement comRevue = (Abonnement)bdgComUneRevue.List[bdgComUneRevue.Position];
+                    if (comRevue.IdRevue == "")
+                    {
+                        Revue revue = (Revue)bdgComRevuesListe.List[bdgComRevuesListe.Position];
+                        AfficheComRevueUn(comRevue, revue);
+                    }
+                    else
+                    {
+                        AfficheComRevueUn(comRevue, null);
+                    }
+                }
+                catch
+                {
+                    VideComRevueUnInfos();
+                }
+            }
+            else
+            {
+                VideComRevueUnInfos();
+            }
+
+            bloquerGesEtape = false;
+        }
+
+        private void VideComRevueUnInfos()
+        {
+            if (ajouterBool == false)
+            {
+                txbRevueComNbAbonnement.Text = "";
+            }
+            dtpRevueDateCommande.MaxDate = DateTime.Today;
+            txbRevueComMontant.Text = "";
+            dtpRevueFinAbonnement.Value = DateTime.Today;
+        }
+
+        private void btnRevueComAjouter_Click(object sender, EventArgs e)
+        {
+            
+            ModifComRevue(false);
+            dtpRevueDateCommande.Enabled = false;
+            ajouterBool = true;
+            VideComRevueUnInfos();
+
+            try
+            {
+                string maxId = controller.GetMaxIdCommande();
+
+                if (string.IsNullOrEmpty(maxId))
+                {
+                    MessageBox.Show("Erreur : aucun ID existant trouvé");
+                    maxId = "0";
+                }
+
+                string newId = IdMaxPlusUn(maxId);
+
+                if (!string.IsNullOrEmpty(newId))
+                {
+                    txbRevueComNbAbonnement.Text = newId;
+                }
+                else
+                {
+                    MessageBox.Show("Erreur lors de la génération du nouvel ID");
+                    txbRevueComNbAbonnement.Text = "00001";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur critique : {ex.Message}");
+                txbRevueComNbAbonnement.Text = "00001";
+            }
+        }
+
+        private void btnRevueComModifier_Click(object sender, EventArgs e)
+        {
+            ajouterBool = false;
+            modifBool = true;
+            ModifComRevue(false);
+            dtpRevueDateCommande.Enabled = false;
+        }
+
+        private void btnRevueComValider_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Êtes-vous sûr de vouloir valider cette action ?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                string id = txbRevueComNbAbonnement.Text;
+                DateTime dateCommande = dtpRevueDateCommande.Value;
+                float montant = float.TryParse(txbRevueComMontant.Text, out _) ? float.Parse(txbRevueComMontant.Text) : -1;
+                DateTime dateFinAbonnement = dtpRevueFinAbonnement.Value;
+                string idRevue = txbRevueComNumRevue.Text;
+
+                if (montant != -1 && !string.IsNullOrWhiteSpace(idRevue))
+                {
+                    Abonnement abonnement = new Abonnement(id, dateCommande, montant, dateFinAbonnement, idRevue);
+
+                    if (ajouterBool == true)
+                    {
+                        bool commandeCreer = controller.CreerAbonnement(abonnement);
+                        MessageBox.Show("Ajout de la nouvelle commande");
+
+                        if (!commandeCreer)
+                        {
+                            MessageBox.Show("Erreur lors de la création de la commande");
+                        }
+                        ajouterBool = false;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            bool commandeUpdate = controller.UpdateAbonnement(abonnement);
+                            MessageBox.Show("Modification de la commande effectuée");
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Erreur lors de la modification de la commande");
+                        }
+                    }
+
+                    List<Abonnement> comListMaj = controller.GetCommandeRevue(idRevue);
+                    RemplirComRevueDetails(comListMaj);
+                }
+            }
+
+            ModifComRevue(true);
+        }
+
+        private void btnRevueComAnnuler_Click(object sender, EventArgs e)
+        {
+            ajouterBool = false;
+            ModifComRevue(true);
+
+            Revue revueRecup = (Revue)bdgComRevuesListe.List[bdgComRevuesListe.Position];
+            List<Abonnement> comListMaj = controller.GetCommandeRevue(revueRecup.Id);
+            RemplirComRevueDetails(comListMaj);
+        }
+
+        private void btnRevueComSupprimer_Click(object sender, EventArgs e)
+        {
+            if (dgvComRevueUne.CurrentCell != null)
+            {
+                Abonnement AboRecup = (Abonnement)bdgComUneRevue.List[bdgComUneRevue.Position];
+                DateTime dateCommande = AboRecup.DateCommande;
+                DateTime DateFinAbonnement = AboRecup.DateFinAbonnement;
+                List<Exemplaire> recupDateParution = controller.GetExemplairesRevue(AboRecup.IdRevue);
+                bool exemplaireDansAbonnement = recupDateParution.Any(exp => ParutionDansAbonnement(dateCommande, DateFinAbonnement, exp.DateAchat));
+
+                if (exemplaireDansAbonnement == false)
+                {
+                    if (MessageBox.Show("Êtes-vous sûr de vouloir supprimer cette commande ?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        Abonnement abonnement = (Abonnement)bdgComUneRevue.List[bdgComUneRevue.Position];
+                        bool resultDelete = controller.DeleteAbonnement(abonnement);
+
+                        if (resultDelete)
+                        {
+                            MessageBox.Show("Commande supprimée");
+                            VideComRevueUnInfos();
+                            List<Abonnement> comListMaj = controller.GetCommandeRevue(abonnement.IdRevue);
+                            RemplirComRevueDetails(comListMaj);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Erreur lors de la suppression de la commande");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Vous ne pouvez pas supprimer cette commande de revue car elle contient des exemplaires !");
+                }
+            }
+        }
+
+
+
+        private bool ParutionDansAbonnement(DateTime dateCommande, DateTime DateFinAbonnement, DateTime dateParution)
+        {
+            return dateParution >= dateCommande && dateParution <= DateFinAbonnement; 
+        }
+        
+        private void VerifTempsAbo()
+        {
+            bool moins30j = false;
+            List<Revue> getRevues = controller.GetAllRevues();
+            string msg30 = "Les abonnement qui expire dans moins de 30 jours sont : \n \n";
+            List<(string Titre, DateTime DateFin)> revuesExpire = new();
+
+            foreach (Revue revue in getRevues)
+            {
+                List<Abonnement> getAboRevue = controller.GetCommandeRevue(revue.Id);
+                foreach(Abonnement abo in getAboRevue)
+                {
+                    DateTime dateCommande = abo.DateCommande;
+                    DateTime dateFinAbonnement = abo.DateFinAbonnement;
+
+                    TimeSpan tmpsRestant = dateFinAbonnement - DateTime.Today;
+
+                    if (tmpsRestant.Days <= 30 && tmpsRestant.Days >=0)
+                    {
+                        msg30 += "titre : " + revue.Titre + " date de fin d'abonnement : " + abo.DateFinAbonnement + "\n";
+                        moins30j = true;
+                    }
+                }
+            }
+
+            if(moins30j == true)
+            {
+                MessageBox.Show(msg30);
+            }
+        }
+
+
+
         #endregion
     }
 }
