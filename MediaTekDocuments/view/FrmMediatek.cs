@@ -1760,7 +1760,7 @@ namespace MediaTekDocuments.view
             cbxLivresComEtapeSuivi.SelectedIndexChanged -= cbxLivresComEtapeSuivi_SelectedIndexChanged;
             try
             {
-                cbxDVDComEtapeSuivi.SelectedIndex = 0;
+                cbxLivresComEtapeSuivi.SelectedIndex = 0;
             }
             catch
             {
