@@ -4,6 +4,13 @@ using System.Windows.Forms;
 
 namespace MediaTekDocuments
 {
+    /// <summary>
+    /// Application de gestion des commandes de livres revues dvd
+    /// </summary>
+    internal class NamespaceDoc
+    {
+
+    }
     static class Program
     {
         /// <summary>

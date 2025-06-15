@@ -9,17 +9,18 @@ using System.Windows.Forms;
 namespace MediaTekDocuments.controller
 {
     /// <summary>
-    /// Contrôleur lié à FrmMediatek
+    /// Contrôleur principal pour l'application MediatekDocuments
+    /// Gère la communication entre la vue et l'accès aux données
     /// </summary>
     class FrmMediatekController
     {
         /// <summary>
-        /// Objet d'accès aux données
+        /// Instance d'accès aux données
         /// </summary>
         private readonly Access access;
 
         /// <summary>
-        /// Récupération de l'instance unique d'accès aux données
+        /// Initialise une nouvelle instance du contrôleur
         /// </summary>
         public FrmMediatekController()
         {
@@ -27,167 +28,185 @@ namespace MediaTekDocuments.controller
         }
 
         /// <summary>
-        /// getter sur la liste des genres
+        /// Récupère tous les genres disponibles
         /// </summary>
-        /// <returns>Liste d'objets Genre</returns>
+        /// <returns>Liste des catégories de genre</returns>
         public List<Categorie> GetAllGenres()
         {
             return access.GetAllGenres();
         }
 
         /// <summary>
-        /// getter sur la liste des livres
+        /// Récupère tous les livres
         /// </summary>
-        /// <returns>Liste d'objets Livre</returns>
+        /// <returns>Liste des livres</returns>
         public List<Livre> GetAllLivres()
         {
             return access.GetAllLivres();
         }
 
         /// <summary>
-        /// getter sur la liste des Dvd
+        /// Récupère tous les DVD
         /// </summary>
-        /// <returns>Liste d'objets dvd</returns>
+        /// <returns>Liste des DVD</returns>
         public List<Dvd> GetAllDvd()
         {
             return access.GetAllDvd();
         }
 
         /// <summary>
-        /// getter sur la liste des revues
+        /// Récupère toutes les revues
         /// </summary>
-        /// <returns>Liste d'objets Revue</returns>
+        /// <returns>Liste des revues</returns>
         public List<Revue> GetAllRevues()
         {
             return access.GetAllRevues();
         }
 
         /// <summary>
-        /// getter sur les rayons
+        /// Récupère tous les rayons
         /// </summary>
-        /// <returns>Liste d'objets Rayon</returns>
+        /// <returns>Liste des rayons</returns>
         public List<Categorie> GetAllRayons()
         {
             return access.GetAllRayons();
         }
 
         /// <summary>
-        /// getter sur les publics
+        /// Récupère tous les publics cibles
         /// </summary>
-        /// <returns>Liste d'objets Public</returns>
+        /// <returns>Liste des publics</returns>
         public List<Categorie> GetAllPublics()
         {
             return access.GetAllPublics();
         }
 
-        ///<summary>
-        /// getter sur les suivis
-        ///</summary>
-        ///<returns>Liste d'objets Suivi</returns>
+        /// <summary>
+        /// Récupère tous les états de suivi
+        /// </summary>
+        /// <returns>Liste des suivis</returns>
         public List<Suivi> GetAllSuivis()
         {
             return access.GetAllSuivis();
         }
 
-
         /// <summary>
-        /// récupère les exemplaires d'une revue
+        /// Récupère les exemplaires d'une revue
         /// </summary>
-        /// <param name="idDocuement">id de la revue concernée</param>
-        /// <returns>Liste d'objets Exemplaire</returns>
+        /// <param name="idDocument">ID de la revue</param>
+        /// <returns>Liste des exemplaires</returns>
         public List<Exemplaire> GetExemplairesRevue(string idDocument)
         {
             return access.GetExemplairesRevue(idDocument);
         }
 
+        /// <summary>
+        /// Récupère un utilisateur par son login
+        /// </summary>
+        /// <param name="login">Identifiant de connexion</param>
+        /// <returns>Informations de l'utilisateur</returns>
         public List<Utilisateur> GetUtilisateur(string login)
         {
             return access.GetUtilisateur(login);
         }
 
         /// <summary>
-        /// récupère les commandes d'un document
+        /// Récupère les commandes d'un document
         /// </summary>
-        /// <param name="idLivreDvd">id du document concernée</param>
-        /// <returns>Liste d'objets Exemplaire</returns>
+        /// <param name="idLivreDvd">ID du document</param>
+        /// <returns>Liste des commandes</returns>
         public List<CommandeDocument> GetCommandeDocument(string idLivreDvd)
         {
             return access.GetAllComDoc(idLivreDvd);
         }
 
         /// <summary>
-        /// récupère les commandes d'une revue
+        /// Récupère les abonnements d'une revue
         /// </summary>
-        /// <param name="idRevue">id de la revue concernée</param>
-        /// <returns>Liste d'objets Exemplaire</returns>
+        /// <param name="idRevue">ID de la revue</param>
+        /// <returns>Liste des abonnements</returns>
         public List<Abonnement> GetCommandeRevue(string idRevue)
         {
             return access.GetAllComRevue(idRevue);
         }
 
         /// <summary>
-        /// Crée un exemplaire d'une revue dans la bdd
+        /// Crée un nouvel exemplaire
         /// </summary>
-        /// <param name="exemplaire">L'objet Exemplaire concerné</param>
-        /// <returns>True si la création a pu se faire</returns>
+        /// <param name="exemplaire">Objet exemplaire à créer</param>
+        /// <returns>True si création réussie</returns>
         public bool CreerExemplaire(Exemplaire exemplaire)
         {
             return access.CreerExemplaire(exemplaire);
         }
 
         /// <summary>
-        /// Crée une commande de document dans la bdd
+        /// Crée une commande de document
         /// </summary>
-        /// <param name="commandeDoc">L'objet Exemplaire concerné</param>
-        /// <returns>True si la création a pu se faire</returns>
-        public bool CreerCommandeDocument( CommandeDocument commandeDoc)
+        /// <param name="commandeDoc">Commande à créer</param>
+        /// <returns>True si création réussie</returns>
+        public bool CreerCommandeDocument(CommandeDocument commandeDoc)
         {
             return access.CreerCommandeDoc(commandeDoc);
         }
 
         /// <summary>
-        /// Crée une commande de revye dans la bdd
+        /// Crée un abonnement
         /// </summary>
-        /// <param name="commandeDoc">L'objet Exemplaire concerné</param>
-        /// <returns>True si la création a pu se faire</returns>
+        /// <param name="abonnement">Abonnement à créer</param>
+        /// <returns>True si création réussie</returns>
         public bool CreerAbonnement(Abonnement abonnement)
         {
             return access.CreerAbonnement(abonnement);
         }
 
-        // <summary>
-        /// Modifier une commande de document dans la bdd
+        /// <summary>
+        /// Met à jour une commande de document
         /// </summary>
-        /// <param name="commandeDoc">L'objet commandedocument concerné</param>
-        /// <returns>True si la création a pu se faire</returns>
+        /// <param name="commandeDoc">Commande à modifier</param>
+        /// <returns>True si mise à jour réussie</returns>
         public bool UpdateCommandeDocument(CommandeDocument commandeDoc)
         {
             return access.UpdateEntite("commandedocument", commandeDoc.Id, JsonConvert.SerializeObject(commandeDoc));
         }
 
-        // <summary>
-        /// Modifier une commande de revue dans la bdd
+        /// <summary>
+        /// Met à jour un abonnement
         /// </summary>
-        /// <param name="commandeDoc">L'objet commandedocument concerné</param>
-        /// <returns>True si la création a pu se faire</returns>
+        /// <param name="abonnement">Abonnement à modifier</param>
+        /// <returns>True si mise à jour réussie</returns>
         public bool UpdateAbonnement(Abonnement abonnement)
         {
             return access.UpdateEntite("abonnement", abonnement.Id, JsonConvert.SerializeObject(abonnement));
         }
 
+        /// <summary>
+        /// Supprime une commande de document
+        /// </summary>
+        /// <param name="commande">Commande à supprimer</param>
+        /// <returns>True si suppression réussie</returns>
         public bool DeleteCommandeDoc(CommandeDocument commande)
         {
             return access.DeleteCommande(commande);
         }
 
+        /// <summary>
+        /// Supprime un abonnement
+        /// </summary>
+        /// <param name="abonnement">Abonnement à supprimer</param>
+        /// <returns>True si suppression réussie</returns>
         public bool DeleteAbonnement(Abonnement abonnement)
         {
             return access.DeleteAbonnement(abonnement);
         }
+
+        /// <summary>
+        /// Récupère le prochain ID disponible pour les commandes
+        /// </summary>
+        /// <returns>ID maximum + 1</returns>
         public string GetMaxIdCommande()
         {
             return access.GetMaxIndex();
         }
-
     }
 }

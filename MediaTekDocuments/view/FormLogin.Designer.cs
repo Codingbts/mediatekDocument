@@ -100,6 +100,7 @@ namespace MediaTekDocuments.view
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtLogin);
             this.Name = "FormLogin";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "FormLogin";
             this.ResumeLayout(false);
             this.PerformLayout();

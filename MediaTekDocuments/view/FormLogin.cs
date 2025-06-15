@@ -26,6 +26,9 @@ namespace MediaTekDocuments.view
             this.controller = new FrmMediatekController();
         }
 
+        /// <summary>
+        /// Permet de vérifier et connecter l'utilisateur si les informations entrées sont correcte 
+        /// </summary>
         private void verifConnexion()
         {
             string loginEcrit = txtLogin.Text;
@@ -89,6 +92,9 @@ namespace MediaTekDocuments.view
                
         }
 
+        /// <summary>
+        /// A permis de hasher le mot de passe afin de le stocker dans la bdd
+        /// </summary>
         public static string HashPassword(string password)
         {
             byte[] salt = new byte[SaltSize];
@@ -110,6 +116,10 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Vérifie si le mot de passe entré correspond au mot de passe hashé stocké en base,
+        /// en recalculant le hash avec le même salt et en comparant les résultats.
+        /// </summary>
         private bool VerifPassword(string passwordEntrer, string passwordBDD)
         {
             byte[] hashBytes = Convert.FromBase64String(passwordBDD);
@@ -124,10 +134,12 @@ namespace MediaTekDocuments.view
             {
                 byte[] Hash = pbkdf2.GetBytes(HashSize);
                 return HashCompare(Hash, recupHash);
-
             }
         }
 
+        /// <summary>
+        /// Compare deux tableaux de bytes.
+        /// </summary>
         private bool HashCompare(byte[] hash1, byte[] hash2)
         {
             if (hash1.Length != hash2.Length)
@@ -141,11 +153,17 @@ namespace MediaTekDocuments.view
             return result == 0;
         }
 
+        /// <summary>
+        /// Permet de connecter l'utilisateur si tout est bon après la vérification
+        /// </summary>
         private void btnValidForm_Click(object sender, EventArgs e)
         {
             verifConnexion();
         }
 
+        /// <summary>
+        /// Vérifie les droits d'accès à l'application selon le service.
+        /// </summary>
         private void VerifDroitAccesApp(string serviceUtili)
         {
 

@@ -3,6 +3,9 @@
 
 namespace MediaTekDocuments.model
 {
+    /// <summary>
+    /// Classe métier Commande de document
+    /// </summary>
     public class CommandeDocument : Commande
     {
         public int NbExemplaire { get; }

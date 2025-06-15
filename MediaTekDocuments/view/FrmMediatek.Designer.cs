@@ -3893,6 +3893,7 @@ namespace MediaTekDocuments.view
             this.Controls.Add(this.tabOngletsApplication);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmMediatek";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Gestion des documents de la médiathèque";
             this.tabComRevues.ResumeLayout(false);
             this.groupBox9.ResumeLayout(false);

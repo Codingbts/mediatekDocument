@@ -41,12 +41,12 @@ namespace MediaTekDocuments.dal
         private const string POST = "POST";
         /// <summary>
         /// méthode HTTP pour update
-        /// 
+        /// </summary>
         private const string PUT = "PUT";
 
         /// <summary>
         /// méthode HTTP pour delete
-        /// 
+        /// </summary>
         private const string DELETE = "DELETE";
 
         /// <summary>
@@ -81,13 +81,11 @@ namespace MediaTekDocuments.dal
 
         }
 
-
-
         /// <summary>
         /// Récupération de la chaîne de connexion
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">Nom de la chaîne de connexion</param>
+        /// <returns>Valeur de la chaîne de connexion</returns>
         static string GetConnectionStringByName(string name)
         {
             string returnValue = null;
@@ -103,7 +101,7 @@ namespace MediaTekDocuments.dal
         /// <returns>instance unique de la classe</returns>
         public static Access GetInstance()
         {
-            if(instance == null)
+            if (instance == null)
             {
                 instance = new Access();
             }
@@ -118,7 +116,6 @@ namespace MediaTekDocuments.dal
         {
             IEnumerable<Genre> lesGenres = TraitementRecup<Genre>(GET, "genre", null);
             return new List<Categorie>(lesGenres);
-            
         }
 
         /// <summary>
@@ -142,9 +139,9 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Retourne toutes les Suivis de public à partir de la BDD
+        /// Retourne tous les états de suivi à partir de la BDD
         /// </summary>
-        /// <returns>Liste d'objets Public</returns>
+        /// <returns>Liste d'objets Suivi</returns>
         public List<Suivi> GetAllSuivis()
         {
             IEnumerable<Suivi> lesSuivis = TraitementRecup<Suivi>(GET, "suivi", null);
@@ -152,7 +149,7 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Retourne toutes les livres à partir de la BDD
+        /// Retourne tous les livres à partir de la BDD
         /// </summary>
         /// <returns>Liste d'objets Livre</returns>
         public List<Livre> GetAllLivres()
@@ -162,7 +159,7 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Retourne toutes les dvd à partir de la BDD
+        /// Retourne tous les dvd à partir de la BDD
         /// </summary>
         /// <returns>Liste d'objets Dvd</returns>
         public List<Dvd> GetAllDvd()
@@ -182,20 +179,20 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Retourne l'index max en string
-        /// de certaines tables
+        /// Retourne l'index max des commandes
         /// </summary>
-        /// <returns></returns>
+        /// <returns>ID maximum sous forme de chaîne</returns>
         public string GetMaxIndex()
         {
-             List<Categorie> maxindex = TraitementRecup<Categorie>(GET, "commandemax", null);
-             return maxindex[0].Id;
+            List<Categorie> maxindex = TraitementRecup<Categorie>(GET, "commandemax", null);
+            return maxindex[0].Id;
         }
 
         /// <summary>
-        /// Retourne toutes les commandes d'un livres ou dvd à partir de la BDD
+        /// Retourne toutes les commandes d'un livre ou DVD
         /// </summary>
-        /// <returns>Liste d'objets Revue</returns>
+        /// <param name="idLivreDvd">ID du livre ou DVD</param>
+        /// <returns>Liste de commandes</returns>
         public List<CommandeDocument> GetAllComDoc(string idLivreDvd)
         {
             String jsonIdLivreDvd = convertToJson("idLivreDvd", idLivreDvd);
@@ -203,9 +200,11 @@ namespace MediaTekDocuments.dal
             return lesComDoc;
         }
 
-        /// Retourne toutes les commandes d'une revue à partir de la BDD
+        /// <summary>
+        /// Retourne tous les abonnements d'une revue
         /// </summary>
-        /// <returns>Liste d'objets Revue</returns>
+        /// <param name="idRevue">ID de la revue</param>
+        /// <returns>Liste d'abonnements</returns>
         public List<Abonnement> GetAllComRevue(string idRevue)
         {
             String jsonIdRevue = convertToJson("idRevue", idRevue);
@@ -226,10 +225,10 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Retourne les exemplaires d'une revue
+        /// Retourne un utilisateur par son login
         /// </summary>
-        /// <param name="idDocument">id de la revue concernée</param>
-        /// <returns>Liste d'objets Exemplaire</returns>
+        /// <param name="login">Login de l'utilisateur</param>
+        /// <returns>Informations de l'utilisateur</returns>
         public List<Utilisateur> GetUtilisateur(string login)
         {
             String jsonLogin = convertToJson("login", login);
@@ -281,13 +280,13 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// ecriture d'une commande de document en base de données
+        /// Crée un nouvel abonnement en base de données
         /// </summary>
-        /// <param name="commandeDoc">Commande du document à insérer</param>
-        /// <returns>true si l'insertion a pu se faire (retour != null)</returns>
+        /// <param name="abonnement">Abonnement à créer</param>
+        /// <returns>true si la création a réussi</returns>
         public bool CreerAbonnement(Abonnement abonnement)
         {
-            String jsonAbonnement= JsonConvert.SerializeObject(abonnement, new CustomDateTimeConverter());
+            String jsonAbonnement = JsonConvert.SerializeObject(abonnement, new CustomDateTimeConverter());
             try
             {
                 List<Abonnement> liste = TraitementRecup<Abonnement>(POST, "abonnement", "champs=" + jsonAbonnement);
@@ -303,12 +302,12 @@ namespace MediaTekDocuments.dal
         }
 
         /// <summary>
-        /// Modifie une entite dans la BDD, return true si l'opération, c'est correctement déroulé
+        /// Modifie une entité dans la base de données
         /// </summary>
-        /// /// <param name="type"></param>
-        /// <param name="id"></param>
-        /// <param name="jsonEntite"></param>
-        /// <returns></returns>
+        /// <param name="type">Type d'entité</param>
+        /// <param name="id">ID de l'entité</param>
+        /// <param name="jsonEntite">Données au format JSON</param>
+        /// <returns>true si la modification a réussi</returns>
         public bool UpdateEntite(string type, string id, string jsonEntite)
         {
             try
@@ -326,6 +325,11 @@ namespace MediaTekDocuments.dal
             return false;
         }
 
+        /// <summary>
+        /// Supprime une commande
+        /// </summary>
+        /// <param name="comm">Commande à supprimer</param>
+        /// <returns>true si la suppression a réussi</returns>
         public bool DeleteCommande(CommandeDocument comm)
         {
             try
@@ -334,17 +338,20 @@ namespace MediaTekDocuments.dal
                 List<CommandeDocument> liste = TraitementRecup<CommandeDocument>(DELETE, "commandedocument" + "/" + jsonCommandeDelete, null);
                 Console.WriteLine("Réponse du serveur : " + JsonConvert.SerializeObject(liste));
                 return true;
-
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error("Erreur lors de la suppression de la commande : {Message}", ex.Message);
                 Console.WriteLine(ex.Message);
             }
-            
             return false;
         }
 
+        /// <summary>
+        /// Supprime un abonnement
+        /// </summary>
+        /// <param name="abo">Abonnement à supprimer</param>
+        /// <returns>true si la suppression a réussi</returns>
         public bool DeleteAbonnement(Abonnement abo)
         {
             try
@@ -353,44 +360,35 @@ namespace MediaTekDocuments.dal
                 List<Abonnement> liste = TraitementRecup<Abonnement>(DELETE, "abonnement" + "/" + jsonAbonnementDelete, null);
                 Console.WriteLine("Réponse du serveur : " + JsonConvert.SerializeObject(liste));
                 return true;
-
             }
             catch (Exception ex)
             {
                 Log.Error("Erreur lors de la suppression de l'abonnement : {Message}", ex.Message);
                 Console.WriteLine(ex.Message);
             }
-
             return false;
         }
-
-
-        /// <summary>
 
         /// <summary>
         /// Traitement de la récupération du retour de l'api, avec conversion du json en liste pour les select (GET)
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">Type d'objet</typeparam>
         /// <param name="methode">verbe HTTP (GET, POST, PUT, DELETE)</param>
         /// <param name="message">information envoyée dans l'url</param>
         /// <param name="parametres">paramètres à envoyer dans le body, au format "chp1=val1&chp2=val2&..."</param>
         /// <returns>liste d'objets récupérés (ou liste vide)</returns>
-        private List<T> TraitementRecup<T> (String methode, String message, String parametres)
+        private List<T> TraitementRecup<T>(String methode, String message, String parametres)
         {
-            // trans
             List<T> liste = new List<T>();
             try
             {
                 JObject retour = api.RecupDistant(methode, message, parametres);
-                // extraction du code retourné
                 String code = (String)retour["code"];
                 if (code.Equals("200"))
                 {
-                    // dans le cas du GET (select), récupération de la liste d'objets
                     if (methode.Equals(GET))
                     {
                         String resultString = JsonConvert.SerializeObject(retour["result"]);
-                        // construction de la liste d'objets à partir du retour de l'api
                         liste = JsonConvert.DeserializeObject<List<T>>(resultString, new CustomBooleanJsonConverter());
                     }
                 }
@@ -398,10 +396,11 @@ namespace MediaTekDocuments.dal
                 {
                     Console.WriteLine("code erreur = " + code + " message = " + (String)retour["message"]);
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Log.Error("Erreur lors de l'accès à l'API : {Message}", e.Message);
-                Console.WriteLine("Erreur lors de l'accès à l'API : "+e.Message);
+                Console.WriteLine("Erreur lors de l'accès à l'API : " + e.Message);
                 Environment.Exit(0);
             }
             return liste;
@@ -410,8 +409,8 @@ namespace MediaTekDocuments.dal
         /// <summary>
         /// Convertit en json un couple nom/valeur
         /// </summary>
-        /// <param name="nom"></param>
-        /// <param name="valeur"></param>
+        /// <param name="nom">Nom de la propriété</param>
+        /// <param name="valeur">Valeur de la propriété</param>
         /// <returns>couple au format json</returns>
         private String convertToJson(Object nom, Object valeur)
         {
@@ -448,6 +447,5 @@ namespace MediaTekDocuments.dal
                 serializer.Serialize(writer, value);
             }
         }
-
     }
 }

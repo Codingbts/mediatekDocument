@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace MediaTekDocuments.model
 {
+    /// <summary>
+    /// Classe métier Suivi
+    /// </summary>
     public class Suivi
     {
         public int IdSuivi;

@@ -1160,8 +1160,8 @@ namespace MediaTekDocuments.view
         /// </summary>
         private void AfficheReceptionExemplairesRevue()
         {
-            string idDocuement = txbReceptionRevueNumero.Text;
-            lesExemplaires = controller.GetExemplairesRevue(idDocuement);
+            string idDocument = txbReceptionRevueNumero.Text;
+            lesExemplaires = controller.GetExemplairesRevue(idDocument);
             RemplirReceptionExemplairesListe(lesExemplaires);
             AccesReceptionExemplaireGroupBox(true);
         }
@@ -1302,18 +1302,13 @@ namespace MediaTekDocuments.view
         #region CommandeLivres
 
         private readonly BindingSource bdgComLivresListe = new BindingSource();
-        private readonly BindingSource bdgComUnLivre = new BindingSource();     
+        private readonly BindingSource bdgComUnLivre = new BindingSource();
         private List<Livre> lesComLivres = new List<Livre>();
-        
-
-
 
         /// <summary>
-        /// Ouverture de l'onglet Commande de Livres : 
-        /// appel des méthodes pour remplir le datagrid des livres et des combos (genre, rayon, public)
+        /// Événement déclenché lors de l'entrée dans l'onglet Commande de Livres
+        /// Initialise les listes et combos nécessaires à la gestion des commandes
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void TabComLivres_Enter(object sender, EventArgs e)
         {
             lesComLivres = controller.GetAllLivres();
@@ -1323,17 +1318,21 @@ namespace MediaTekDocuments.view
             RemplirComboSuivi(controller.GetAllSuivis(), bdgSuivis, cbxLivresComEtapeSuivi);
             ModifComLivre(true);
             RemplirComLivresListeComplete();
-            
         }
 
+        /// <summary>
+        /// Événement déclenché lors du clic sur l'onglet Commande de Livres
+        /// Réinitialise l'indicateur de message de suivi
+        /// </summary>
         private void tabComLivres_Click(object sender, EventArgs e)
         {
             msgBoxSuivi = false;
         }
+
         /// <summary>
-        /// Remplit le dategrid avec la liste reçue en paramètre
+        /// Remplit le DataGridView avec la liste des livres fournie
+        /// Configure les colonnes visibles et leur ordre d'affichage
         /// </summary>
-        /// <param name="Comlivres">liste de livres</param>
         private void RemplirComLivresListe(List<Livre> Comlivres)
         {
             bdgComLivresListe.DataSource = Comlivres;
@@ -1349,8 +1348,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Affichage de la liste complète des livres
-        /// et annulation de toutes les recherches et filtres
+        /// Affiche la liste complète des livres et réinitialise les filtres
         /// </summary>
         private void RemplirComLivresListeComplete()
         {
@@ -1359,7 +1357,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// vide les zones de recherche et de filtre
+        /// Réinitialise les zones de recherche et de filtre
         /// </summary>
         private void VideComLivresZones()
         {
@@ -1371,11 +1369,9 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Recherche et affichage du livre dont on a saisi le numéro.
-        /// Si non trouvé, affichage d'un MessageBox.
+        /// Recherche un livre par son numéro et l'affiche
+        /// Affiche un message si le numéro n'est pas trouvé
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComLivresNumRecherche_Click(object sender, EventArgs e)
         {
             if (!txbComLivresNumRecherche.Text.Equals(""))
@@ -1403,12 +1399,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Recherche et affichage des livres dont le titre matche acec la saisie.
-        /// Cette procédure est exécutée à chaque ajout ou suppression de caractère
-        /// dans le textBox de saisie.
+        /// Filtre dynamique des livres par titre au fur et à mesure de la saisie
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void TxbComLivresTitreRecherche_TextChanged(object sender, EventArgs e)
         {
             if (!txbComLivresTitreRecherche.Text.Equals(""))
@@ -1423,7 +1415,6 @@ namespace MediaTekDocuments.view
             }
             else
             {
-                // si la zone de saisie est vide et aucun élément combo sélectionné, réaffichage de la liste complète
                 if (cbxComLivresGenres.SelectedIndex < 0 && cbxComLivresPublics.SelectedIndex < 0 && cbxComLivresRayons.SelectedIndex < 0
                     && txbComLivresNumRecherche.Text.Equals(""))
                 {
@@ -1433,9 +1424,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Affichage des informations du livre sélectionné
+        /// Affiche les informations détaillées du livre sélectionné
         /// </summary>
-        /// <param name="livre">le livre</param>
         private void AfficheComLivresInfos(Livre livre)
         {
             txbInfoLivresAuteur.Text = livre.Auteur;
@@ -1449,7 +1439,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Vide les zones d'affichage des informations du livre
+        /// Réinitialise les zones d'affichage des informations du livre
         /// </summary>
         private void VideComLivresInfos()
         {
@@ -1464,10 +1454,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur le genre
+        /// Filtre les livres par genre sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void CbxComLivresGenres_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComLivresGenres.SelectedIndex >= 0)
@@ -1483,10 +1471,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur la catégorie de public
+        /// Filtre les livres par public sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void CbxComLivresPublics_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComLivresPublics.SelectedIndex >= 0)
@@ -1502,10 +1488,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur le rayon
+        /// Filtre les livres par rayon sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void CbxComLivresRayons_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComLivresRayons.SelectedIndex >= 0)
@@ -1521,11 +1505,9 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Sur la sélection d'une ligne ou cellule dans le grid
-        /// affichage des informations du livre
+        /// Événement de sélection d'un livre dans la liste
+        /// Affiche les informations du livre et ses commandes associées
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void DgvComLivresListe_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvComLivresListe.CurrentCell != null)
@@ -1543,11 +1525,10 @@ namespace MediaTekDocuments.view
                     {
                         ModifComLivre(true);
                         ajouterBool = false;
-                        if ( comDoc.Count == 0)
+                        if (comDoc.Count == 0)
                         {
                             txbLivresComNbCommande.Text = "";
                         }
-                        
                     }
 
                     if (supprComLivre)
@@ -1557,7 +1538,7 @@ namespace MediaTekDocuments.view
                         RemplirComLivresDetails(comDocSuppr);
                         ModifComLivre(true);
                     }
-                    
+
                     if (modifBool)
                     {
                         modifBool = false;
@@ -1565,12 +1546,10 @@ namespace MediaTekDocuments.view
                         RemplirComLivresDetails(comDocSuppr);
                         ModifComLivre(true);
                     }
-
                 }
                 catch
                 {
-                    VideComLivresZones();          
-
+                    VideComLivresZones();
                 }
             }
             else
@@ -1579,26 +1558,33 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Annule le filtre par genre
+        /// </summary>
         private void btnComLivresAnnulGenres_Click(object sender, EventArgs e)
         {
             RemplirComLivresListeComplete();
         }
 
+        /// <summary>
+        /// Annule le filtre par public
+        /// </summary>
         private void btnComLivresAnnulPublics_Click(object sender, EventArgs e)
         {
             RemplirComLivresListeComplete();
         }
 
+        /// <summary>
+        /// Annule le filtre par rayon
+        /// </summary>
         private void btnComLivresAnnulRayons_Click(object sender, EventArgs e)
         {
             RemplirComLivresListeComplete();
         }
 
         /// <summary>
-        /// Tri sur les colonnes
+        /// Trie les livres selon la colonne cliquée
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void DgvComLivresListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             VideComLivresZones();
@@ -1632,9 +1618,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Remplit le dategrid des commande du livre selectionné
+        /// Remplit la liste des commandes pour le livre sélectionné
         /// </summary>
-        /// <param name="Comlivre">liste de commandes</param>
         private void RemplirComLivresDetails(List<CommandeDocument> Comlivre)
         {
             bdgComUnLivre.DataSource = Comlivre;
@@ -1643,13 +1628,11 @@ namespace MediaTekDocuments.view
             dgvComLivreUn.Columns["idSuivi"].Visible = false;
             dgvComLivreUn.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dgvComLivreUn.Columns["dateCommande"].DisplayIndex = 0;
-            
         }
 
         /// <summary>
-        /// Affichage des informations de la commande du livre sélectionné
+        /// Affiche les détails de la commande sélectionnée
         /// </summary>
-        /// <param name="Comlivre">Commande du livre</param>
         private void AfficheComLivreUn(CommandeDocument Comlivre, Livre livre)
         {
             txbLivresComNbCommande.Text = Comlivre.Id;
@@ -1671,9 +1654,11 @@ namespace MediaTekDocuments.view
             ancienneEtapeSuivi = cbxLivresComEtapeSuivi.SelectedIndex;
             cbxLivresComEtapeSuivi.SelectedIndexChanged += cbxLivresComEtapeSuivi_SelectedIndexChanged;
             bloquerGesEtape = false;
-
         }
 
+        /// <summary>
+        /// Active/désactive les contrôles pour l'édition d'une commande
+        /// </summary>
         private void ModifComLivre(bool modif)
         {
             txbLivresComNbCommande.Enabled = false;
@@ -1690,13 +1675,15 @@ namespace MediaTekDocuments.view
             ajouterBool = false;
         }
 
+        /// <summary>
+        /// Événement de sélection d'une commande dans la liste
+        /// </summary>
         private void DgvComLivreUn_SelectionChanged(object sender, EventArgs e)
         {
             bloquerGesEtape = true;
 
             if (dgvComLivreUn.CurrentCell != null)
             {
-               
                 try
                 {
                     CommandeDocument comLivre = (CommandeDocument)bdgComUnLivre.List[bdgComUnLivre.Position];
@@ -1706,8 +1693,6 @@ namespace MediaTekDocuments.view
                 {
                     VideComLivresZones();
                 }
-
-               
             }
             else
             {
@@ -1715,9 +1700,11 @@ namespace MediaTekDocuments.view
             }
 
             bloquerGesEtape = false;
-
         }
 
+        /// <summary>
+        /// Réinitialise les zones d'affichage des détails de commande
+        /// </summary>
         private void VideComLivreUnInfos()
         {
             if (!ajouterBool)
@@ -1730,11 +1717,13 @@ namespace MediaTekDocuments.view
             cbxLivresComEtapeSuivi.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Crée ou met à jour une commande selon le contexte
+        /// </summary>
         private void AjoutUpCommandeLivre(CommandeDocument commandeDocument)
         {
             if (ajouterBool)
             {
-
                 bool commandeCreer = controller.CreerCommandeDocument(commandeDocument);
                 MessageBox.Show("Ajout de la nouvelle commande");
 
@@ -1742,16 +1731,14 @@ namespace MediaTekDocuments.view
                 {
                     MessageBox.Show("Erreur lors de la création de la commande");
                 }
-
             }
-            else if(!ajouterBool)
+            else if (!ajouterBool)
             {
                 try
                 {
                     bloquerGesEtape = true;
                     controller.UpdateCommandeDocument(commandeDocument);
                     MessageBox.Show("Modification de la commande effectué");
-                    
                 }
                 catch
                 {
@@ -1760,14 +1747,17 @@ namespace MediaTekDocuments.view
             }
         }
 
-            private void btnLivresComAjouter_Click(object sender, EventArgs e)
-            {
-                msgBoxSuivi = false;
-               ModifComLivre(false);
-               ajouterBool = true;
-               VideComLivreUnInfos();
-                bloquerGesEtape = true;
-               cbxLivresComEtapeSuivi.SelectedIndexChanged -= cbxLivresComEtapeSuivi_SelectedIndexChanged;
+        /// <summary>
+        /// Événement de clic sur le bouton d'ajout de commande
+        /// </summary>
+        private void btnLivresComAjouter_Click(object sender, EventArgs e)
+        {
+            msgBoxSuivi = false;
+            ModifComLivre(false);
+            ajouterBool = true;
+            VideComLivreUnInfos();
+            bloquerGesEtape = true;
+            cbxLivresComEtapeSuivi.SelectedIndexChanged -= cbxLivresComEtapeSuivi_SelectedIndexChanged;
             try
             {
                 cbxDVDComEtapeSuivi.SelectedIndex = 0;
@@ -1777,8 +1767,8 @@ namespace MediaTekDocuments.view
                 return;
             }
             cbxLivresComEtapeSuivi.SelectedIndexChanged += cbxLivresComEtapeSuivi_SelectedIndexChanged;
-              cbxLivresComEtapeSuivi.Enabled = false;
-               dtpLivresComDateCommande.Enabled = false;
+            cbxLivresComEtapeSuivi.Enabled = false;
+            dtpLivresComDateCommande.Enabled = false;
             msgBoxSuivi = true;
 
             try
@@ -1788,13 +1778,11 @@ namespace MediaTekDocuments.view
                 if (string.IsNullOrEmpty(maxId))
                 {
                     MessageBox.Show("Erreur : aucun ID existant trouvé");
-                    maxId = "0";  
+                    maxId = "0";
                 }
 
                 string newId = IdMaxPlusUn(maxId);
 
-
-                
                 if (!string.IsNullOrEmpty(newId))
                 {
                     txbLivresComNbCommande.Text = newId;
@@ -1802,7 +1790,7 @@ namespace MediaTekDocuments.view
                 else
                 {
                     MessageBox.Show("Erreur lors de la génération du nouvel ID");
-                    txbLivresComNbCommande.Text = "00001"; 
+                    txbLivresComNbCommande.Text = "00001";
                 }
             }
             catch (Exception ex)
@@ -1811,37 +1799,40 @@ namespace MediaTekDocuments.view
                 txbLivresComNbCommande.Text = "00001";
             }
             bloquerGesEtape = false;
-
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de modification de commande
+        /// </summary>
         private void btnLivresComModifier_Click(object sender, EventArgs e)
         {
             ajouterBool = false;
             modifBool = true;
             ModifComLivre(false);
-            
         }
 
+        /// <summary>
+        /// Gère le changement d'étape de suivi avec validation des transitions
+        /// </summary>
         private void GestionCbxSuivi(int nvEtape)
         {
             if (bloquerGesEtape)
             {
                 return;
             }
-           
+
             if (nvEtape == ancienneEtapeSuivi)
             {
                 return;
             }
             if (nvEtape < ancienneEtapeSuivi && ancienneEtapeSuivi >= 2)
             {
-
                 if (msgBoxSuivi)
-                { 
-                MessageBox.Show("Il est impossible de sélectionner une étape antérieure à l'étape actuel.");
-                cbxLivresComEtapeSuivi.SelectedIndex = ancienneEtapeSuivi;
-                return;
-                 }
+                {
+                    MessageBox.Show("Il est impossible de sélectionner une étape antérieure à l'étape actuel.");
+                    cbxLivresComEtapeSuivi.SelectedIndex = ancienneEtapeSuivi;
+                    return;
+                }
             }
 
             if (ancienneEtapeSuivi < 2 && nvEtape == 3)
@@ -1853,6 +1844,10 @@ namespace MediaTekDocuments.view
             ancienneEtapeSuivi = nvEtape;
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de validation
+        /// Gère la validation selon le contexte (ajout/modification/suppression)
+        /// </summary>
         private void btnLivresComValider_Click(object sender, EventArgs e)
         {
             bloquerGesEtape = true;
@@ -1862,7 +1857,7 @@ namespace MediaTekDocuments.view
                 if (MessageBox.Show("Etes vous sur de vouloir supprimer cette commande ?", "oui ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     CommandeDocument comListeDelete = (CommandeDocument)bdgComUnLivre.List[bdgComUnLivre.Position];
-                    if(dgvComLivreUn.CurrentCell != null && txbLivresComNbCommande.Text != "")
+                    if (dgvComLivreUn.CurrentCell != null && txbLivresComNbCommande.Text != "")
                     {
                         if (comListeDelete.IdSuivi <= 2)
                         {
@@ -1886,7 +1881,7 @@ namespace MediaTekDocuments.view
                             MessageBox.Show("Vous ne pouvez pas supprimer une commande livrée ou réglée !");
                             supprComLivre = false;
                         }
-                    }                 
+                    }
                 }
             }
             else
@@ -1912,19 +1907,21 @@ namespace MediaTekDocuments.view
                     {
                         CommandeDocument commandeLivre = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idLivreDvd, idSuivi, etapeSuivi);
                         AjoutUpCommandeLivre(commandeLivre);
-                        if(ajouterBool)
+                        if (ajouterBool)
                         {
                             ajouterBool = false;
                         }
                         List<CommandeDocument> comListMaj = controller.GetCommandeDocument(idLivreDvd);
                         RemplirComLivresDetails(comListMaj);
                     }
-
                 }
             }
             ModifComLivre(true);
         }
 
+        /// <summary>
+        /// Vérifie la validité des valeurs saisies pour une commande
+        /// </summary>
         private void VerifValueLivreCom()
         {
             float montant = -1;
@@ -1954,17 +1951,22 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton d'annulation
+        /// </summary>
         private void btnLivresComAnnuler_Click(object sender, EventArgs e)
         {
-            
             ajouterBool = false;
             ModifComLivre(true);
             bloquerGesEtape = true;
-            Livre livreRecupId= (Livre)bdgComLivresListe.List[bdgComLivresListe.Position];
+            Livre livreRecupId = (Livre)bdgComLivresListe.List[bdgComLivresListe.Position];
             List<CommandeDocument> comListMaj = controller.GetCommandeDocument(livreRecupId.Id);
             RemplirComLivresDetails(comListMaj);
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de suppression de commande
+        /// </summary>
         private void btnLivresComSupprimer_Click(object sender, EventArgs e)
         {
             supprComLivre = true;
@@ -1973,10 +1975,11 @@ namespace MediaTekDocuments.view
             btnLivresComModifier.Enabled = false;
             btnLivresComAnnuler.Enabled = true;
             btnLivresComValider.Enabled = true;
-            
         }
 
-
+        /// <summary>
+        /// Événement de changement de sélection dans la liste des étapes de suivi
+        /// </summary>
         private void cbxLivresComEtapeSuivi_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (bloquerGesEtape)
@@ -1984,9 +1987,8 @@ namespace MediaTekDocuments.view
                 return;
             }
 
-                int nvEtape = cbxLivresComEtapeSuivi.SelectedIndex;
-                GestionCbxSuivi(nvEtape);
-            
+            int nvEtape = cbxLivresComEtapeSuivi.SelectedIndex;
+            GestionCbxSuivi(nvEtape);
         }
 
         #endregion
@@ -1997,11 +1999,9 @@ namespace MediaTekDocuments.view
         private List<Dvd> lesComDvd = new List<Dvd>();
 
         /// <summary>
-        /// Ouverture de l'onglet Dvds : 
-        /// appel des méthodes pour remplir le datagrid des dvd et des combos (genre, rayon, public)
+        /// Événement déclenché lors de l'entrée dans l'onglet Commande de DVD
+        /// Initialise les listes et combos nécessaires à la gestion des commandes
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void tabComDvd_Enter(object sender, EventArgs e)
         {
             lesComDvd = controller.GetAllDvd();
@@ -2014,16 +2014,19 @@ namespace MediaTekDocuments.view
             bloquerGesEtape = true;
         }
 
-
+        /// <summary>
+        /// Événement déclenché lors du clic sur l'onglet Commande de DVD
+        /// Réinitialise l'indicateur de message de suivi
+        /// </summary>
         private void tabComDVD_Click(object sender, EventArgs e)
         {
             msgBoxSuivi = false;
         }
 
         /// <summary>
-        /// Remplit le dategrid avec la liste reçue en paramètre
+        /// Remplit le DataGridView avec la liste des DVD fournie
+        /// Configure les colonnes visibles et leur ordre d'affichage
         /// </summary>
-        /// <param name="Dvds">liste de dvd</param>
         private void RemplirComDvdListe(List<Dvd> Dvds)
         {
             bdgComDvdListe.DataSource = Dvds;
@@ -2039,11 +2042,9 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Recherche et affichage du Dvd dont on a saisi le numéro.
-        /// Si non trouvé, affichage d'un MessageBox.
+        /// Recherche un DVD par son numéro et l'affiche
+        /// Affiche un message si le numéro n'est pas trouvé
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComDvdNumRecherche_Click(object sender, EventArgs e)
         {
             if (!txbComDvdNumRecherche.Text.Equals(""))
@@ -2071,12 +2072,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Recherche et affichage des Dvd dont le titre matche acec la saisie.
-        /// Cette procédure est exécutée à chaque ajout ou suppression de caractère
-        /// dans le textBox de saisie.
+        /// Filtre dynamique des DVD par titre au fur et à mesure de la saisie
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void txbComDvdTitreRecherche_TextChanged(object sender, EventArgs e)
         {
             if (!txbComDvdTitreRecherche.Text.Equals(""))
@@ -2100,9 +2097,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Affichage des informations du dvd sélectionné
+        /// Affiche les informations détaillées du DVD sélectionné
         /// </summary>
-        /// <param name="dvd">le dvd</param>
         private void AfficheComDvdInfos(Dvd dvd)
         {
             txbInfoDvdRealisateur.Text = dvd.Realisateur;
@@ -2116,7 +2112,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Vide les zones d'affichage des informations du dvd
+        /// Réinitialise les zones d'affichage des informations du DVD
         /// </summary>
         private void VideComDvdInfos()
         {
@@ -2131,10 +2127,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur le genre
+        /// Filtre les DVD par genre sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbxComDvdGenres_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComDvdGenres.SelectedIndex >= 0)
@@ -2150,10 +2144,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur la catégorie de public
+        /// Filtre les DVD par public sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbxComDvdPublics_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComDvdPublics.SelectedIndex >= 0)
@@ -2169,10 +2161,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur le rayon
+        /// Filtre les DVD par rayon sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbxComDvdRayons_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComDvdRayons.SelectedIndex >= 0)
@@ -2188,11 +2178,9 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Sur la sélection d'une ligne ou cellule dans le grid
-        /// affichage des informations du dvd
+        /// Événement de sélection d'un DVD dans la liste
+        /// Affiche les informations du DVD et ses commandes associées
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dgvComdListe_SelectionChanged(object sender, EventArgs e)
         {
             if (dgvComDvdListe.CurrentCell != null)
@@ -2214,7 +2202,6 @@ namespace MediaTekDocuments.view
                         {
                             txbDVDComNbCommande.Text = "";
                         }
-
                     }
 
                     if (supprComDVD)
@@ -2232,12 +2219,10 @@ namespace MediaTekDocuments.view
                         RemplirComDVDDetails(comDocSuppr);
                         ModifComDVD(true);
                     }
-
                 }
                 catch
                 {
                     VideComDvdZones();
-
                 }
             }
             else
@@ -2247,38 +2232,31 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Sur le clic du bouton d'annulation, affichage de la liste complète des Dvd
+        /// Annule le filtre par public et réaffiche la liste complète
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComDvdAnnulPublics_Click(object sender, EventArgs e)
         {
             RemplirComDvdListeComplete();
         }
 
         /// <summary>
-        /// Sur le clic du bouton d'annulation, affichage de la liste complète des Dvd
+        /// Annule le filtre par rayon et réaffiche la liste complète
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComDvdAnnulRayons_Click(object sender, EventArgs e)
         {
             RemplirComDvdListeComplete();
         }
 
         /// <summary>
-        /// Sur le clic du bouton d'annulation, affichage de la liste complète des Dvd
+        /// Annule le filtre par genre et réaffiche la liste complète
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComDvdAnnulGenres_Click(object sender, EventArgs e)
         {
             RemplirComDvdListeComplete();
         }
 
         /// <summary>
-        /// Affichage de la liste complète des Dvd
-        /// et annulation de toutes les recherches et filtres
+        /// Affiche la liste complète des DVD et réinitialise les filtres
         /// </summary>
         private void RemplirComDvdListeComplete()
         {
@@ -2287,7 +2265,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// vide les zones de recherche et de filtre
+        /// Réinitialise les zones de recherche et de filtre
         /// </summary>
         private void VideComDvdZones()
         {
@@ -2299,10 +2277,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Tri sur les colonnes
+        /// Trie les DVD selon la colonne cliquée
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dgvComDvdListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             VideComDvdZones();
@@ -2336,9 +2312,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Remplit le dategrid des commandes du DVD sélectionné
+        /// Remplit la liste des commandes pour le DVD sélectionné
         /// </summary>
-        /// <param name="Comdvd">liste de commandes</param>
         private void RemplirComDVDDetails(List<CommandeDocument> Comdvd)
         {
             bdgComUnDVD.DataSource = Comdvd;
@@ -2350,11 +2325,10 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Affichage des informations de la commande du DVD sélectionné
+        /// Affiche les détails de la commande sélectionnée
         /// </summary>
-        /// <param name="Comdvd">Commande du DVD</param>
         private void AfficheComDVDUn(CommandeDocument Comdvd, Dvd dvd)
-        { 
+        {
             txbDVDComNbCommande.Text = Comdvd.Id;
             dtpDVDComDateCommande.Value = Comdvd.DateCommande;
             txbDVDComMontant.Text = Comdvd.Montant.ToString();
@@ -2375,6 +2349,9 @@ namespace MediaTekDocuments.view
             bloquerGesEtape = false;
         }
 
+        /// <summary>
+        /// Active/désactive les contrôles pour l'édition d'une commande
+        /// </summary>
         private void ModifComDVD(bool modif)
         {
             txbDVDComNbCommande.Enabled = false;
@@ -2391,6 +2368,9 @@ namespace MediaTekDocuments.view
             ajouterBool = false;
         }
 
+        /// <summary>
+        /// Événement de sélection d'une commande dans la liste
+        /// </summary>
         private void DgvComDVDUn_SelectionChanged(object sender, EventArgs e)
         {
             bloquerGesEtape = true;
@@ -2399,8 +2379,8 @@ namespace MediaTekDocuments.view
             {
                 try
                 {
-                    CommandeDocument comDvd = (CommandeDocument)bdgComUnDVD.List[bdgComUnDVD.Position]; 
-                    if(comDvd.IdLivreDvd == "")
+                    CommandeDocument comDvd = (CommandeDocument)bdgComUnDVD.List[bdgComUnDVD.Position];
+                    if (comDvd.IdLivreDvd == "")
                     {
                         Dvd dvd = (Dvd)bdgComDvdListe.List[bdgComDvdListe.Position];
                         AfficheComDVDUn(comDvd, dvd);
@@ -2409,7 +2389,6 @@ namespace MediaTekDocuments.view
                     {
                         AfficheComDVDUn(comDvd, null);
                     }
-                    
                 }
                 catch
                 {
@@ -2424,6 +2403,9 @@ namespace MediaTekDocuments.view
             bloquerGesEtape = false;
         }
 
+        /// <summary>
+        /// Réinitialise les zones d'affichage des détails de commande
+        /// </summary>
         private void VideComDVDUnInfos()
         {
             if (!ajouterBool)
@@ -2436,6 +2418,9 @@ namespace MediaTekDocuments.view
             cbxDVDComEtapeSuivi.SelectedIndex = -1;
         }
 
+        /// <summary>
+        /// Crée ou met à jour une commande selon le contexte
+        /// </summary>
         private void AjoutUpCommandeDVD(CommandeDocument commandeDocument)
         {
             if (ajouterBool)
@@ -2463,6 +2448,9 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton d'ajout de commande
+        /// </summary>
         private void btnDVDComAjouter_Click(object sender, EventArgs e)
         {
             msgBoxSuivi = false;
@@ -2514,6 +2502,9 @@ namespace MediaTekDocuments.view
             bloquerGesEtape = false;
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de modification de commande
+        /// </summary>
         private void btnDVDComModifier_Click(object sender, EventArgs e)
         {
             ajouterBool = false;
@@ -2521,6 +2512,10 @@ namespace MediaTekDocuments.view
             ModifComDVD(false);
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de validation
+        /// Gère la validation selon le contexte (ajout/modification/suppression)
+        /// </summary>
         private void btnDVDComValider_Click(object sender, EventArgs e)
         {
             bloquerGesEtape = true;
@@ -2592,6 +2587,9 @@ namespace MediaTekDocuments.view
             ModifComDVD(true);
         }
 
+        /// <summary>
+        /// Vérifie la validité des valeurs saisies pour une commande
+        /// </summary>
         private void VerifValueDVDCom()
         {
             float montant = -1;
@@ -2621,6 +2619,9 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton d'annulation
+        /// </summary>
         private void btnDVDComAnnuler_Click(object sender, EventArgs e)
         {
             ajouterBool = false;
@@ -2631,6 +2632,9 @@ namespace MediaTekDocuments.view
             RemplirComDVDDetails(comListMaj);
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de suppression de commande
+        /// </summary>
         private void btnDVDComSupprimer_Click(object sender, EventArgs e)
         {
             supprComDVD = true;
@@ -2641,6 +2645,9 @@ namespace MediaTekDocuments.view
             btnDVDComValider.Enabled = true;
         }
 
+        /// <summary>
+        /// Événement de changement de sélection dans la liste des étapes de suivi
+        /// </summary>
         private void cbxDVDComEtapeSuivi_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (bloquerGesEtape)
@@ -2654,20 +2661,15 @@ namespace MediaTekDocuments.view
 
         #endregion
 
-
-
-
         #region Onglet CommandeRevues
         private readonly BindingSource bdgComRevuesListe = new BindingSource();
         private readonly BindingSource bdgComUneRevue = new BindingSource();
         private List<Revue> lesComRevues = new List<Revue>();
 
         /// <summary>
-        /// Ouverture de l'onglet Revues : 
-        /// appel des méthodes pour remplir le datagrid des revues et des combos (genre, rayon, public)
+        /// Événement déclenché lors de l'entrée dans l'onglet Commande de Revues
+        /// Initialise les listes et combos nécessaires à la gestion des commandes
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void tabComRevues_Enter(object sender, EventArgs e)
         {
             lesComRevues = controller.GetAllRevues();
@@ -2679,9 +2681,9 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Remplit le dategrid avec la liste reçue en paramètre
+        /// Remplit le DataGridView avec la liste des revues fournie
+        /// Configure les colonnes visibles et leur ordre d'affichage
         /// </summary>
-        /// <param name="revues"></param>
         private void RemplirComRevuesListe(List<Revue> Comrevues)
         {
             bdgComRevuesListe.DataSource = Comrevues;
@@ -2696,11 +2698,9 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Recherche et affichage de la revue dont on a saisi le numéro.
-        /// Si non trouvé, affichage d'un MessageBox.
+        /// Recherche une revue par son numéro et l'affiche
+        /// Affiche un message si le numéro n'est pas trouvé
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComRevuesNumRecherche_Click(object sender, EventArgs e)
         {
             if (!txbComRevuesNumRecherche.Text.Equals(""))
@@ -2728,12 +2728,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Recherche et affichage des revues dont le titre matche acec la saisie.
-        /// Cette procédure est exécutée à chaque ajout ou suppression de caractère
-        /// dans le textBox de saisie.
+        /// Filtre dynamique des revues par titre au fur et à mesure de la saisie
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void txbComRevuesTitreRecherche_TextChanged(object sender, EventArgs e)
         {
             if (!txbComRevuesTitreRecherche.Text.Equals(""))
@@ -2748,7 +2744,6 @@ namespace MediaTekDocuments.view
             }
             else
             {
-                // si la zone de saisie est vide et aucun élément combo sélectionné, réaffichage de la liste complète
                 if (cbxComRevuesGenres.SelectedIndex < 0 && cbxComRevuesPublics.SelectedIndex < 0 && cbxComRevuesRayons.SelectedIndex < 0
                     && txbComRevuesNumRecherche.Text.Equals(""))
                 {
@@ -2758,9 +2753,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Affichage des informations de la revue sélectionné
+        /// Affiche les informations détaillées de la revue sélectionnée
         /// </summary>
-        /// <param name="revue">la revue</param>
         private void AfficheComRevuesInfos(Revue revue)
         {
             txbComRevuesNumero.Text = revue.Id;
@@ -2773,7 +2767,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Vide les zones d'affichage des informations de la reuve
+        /// Réinitialise les zones d'affichage des informations de la revue
         /// </summary>
         private void VideComRevuesInfos()
         {
@@ -2787,10 +2781,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur le genre
+        /// Filtre les revues par genre sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbxComRevuesGenres_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComRevuesGenres.SelectedIndex >= 0)
@@ -2806,10 +2798,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur la catégorie de public
+        /// Filtre les revues par public sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbxComRevuesPublics_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComRevuesPublics.SelectedIndex >= 0)
@@ -2825,10 +2815,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Filtre sur le rayon
+        /// Filtre les revues par rayon sélectionné
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void cbxComRevuesRayons_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbxComRevuesRayons.SelectedIndex >= 0)
@@ -2844,14 +2832,11 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Sur la sélection d'une ligne ou cellule dans le grid
-        /// affichage des informations de la revue
+        /// Événement de sélection d'une revue dans la liste
+        /// Affiche les informations de la revue et ses abonnements associés
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dgvComRevuesListe_SelectionChanged(object sender, EventArgs e)
         {
-
             if (dgvComRevuesListe.CurrentCell != null)
             {
                 try
@@ -2871,7 +2856,6 @@ namespace MediaTekDocuments.view
                         {
                             txbComRevuesNumero.Text = "";
                         }
-
                     }
 
                     if (supprComRevue)
@@ -2889,55 +2873,44 @@ namespace MediaTekDocuments.view
                         RemplirComRevueDetails(comAboSuppr);
                         ModifComRevue(true);
                     }
-
                 }
                 catch
                 {
                     VideComRevuesZones();
-
                 }
             }
             else
             {
                 VideComRevuesInfos();
             }
-
         }
 
         /// <summary>
-        /// Sur le clic du bouton d'annulation, affichage de la liste complète des revues
+        /// Annule le filtre par public et réaffiche la liste complète
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComRevuesAnnulPublics_Click(object sender, EventArgs e)
         {
             RemplirComRevuesListeComplete();
         }
 
         /// <summary>
-        /// Sur le clic du bouton d'annulation, affichage de la liste complète des revues
+        /// Annule le filtre par rayon et réaffiche la liste complète
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComRevuesAnnulRayons_Click(object sender, EventArgs e)
         {
             RemplirComRevuesListeComplete();
-            
         }
 
         /// <summary>
-        /// Sur le clic du bouton d'annulation, affichage de la liste complète des revues
+        /// Annule le filtre par genre et réaffiche la liste complète
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void btnComRevuesAnnulGenres_Click(object sender, EventArgs e)
         {
             RemplirComRevuesListeComplete();
         }
 
         /// <summary>
-        /// Affichage de la liste complète des revues
-        /// et annulation de toutes les recherches et filtres
+        /// Affiche la liste complète des revues et réinitialise les filtres
         /// </summary>
         private void RemplirComRevuesListeComplete()
         {
@@ -2946,7 +2919,7 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// vide les zones de recherche et de filtre
+        /// Réinitialise les zones de recherche et de filtre
         /// </summary>
         private void VideComRevuesZones()
         {
@@ -2958,10 +2931,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Tri sur les colonnes
+        /// Trie les revues selon la colonne cliquée
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dgvComRevuesListe_ColumnHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             VideComRevuesZones();
@@ -2995,9 +2966,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Remplit le dategrid des commandes du DVD sélectionné
+        /// Remplit la liste des abonnements pour la revue sélectionnée
         /// </summary>
-        /// <param name="Comrevue">liste de revue</param>
         private void RemplirComRevueDetails(List<Abonnement> Comrevue)
         {
             bdgComUneRevue.DataSource = Comrevue;
@@ -3008,9 +2978,8 @@ namespace MediaTekDocuments.view
         }
 
         /// <summary>
-        /// Affichage des informations de la commande du DVD sélectionné
+        /// Affiche les détails de l'abonnement sélectionné
         /// </summary>
-        /// <param name="Comdvd">Commande du DVD</param>
         private void AfficheComRevueUn(Abonnement Comrevue, Revue revue)
         {
             txbRevueComNbAbonnement.Text = Comrevue.Id;
@@ -3027,6 +2996,9 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Active/désactive les contrôles pour l'édition d'un abonnement
+        /// </summary>
         private void ModifComRevue(bool modif)
         {
             txbRevueComNbAbonnement.Enabled = false;
@@ -3042,6 +3014,9 @@ namespace MediaTekDocuments.view
             ajouterBool = false;
         }
 
+        /// <summary>
+        /// Événement de sélection d'un abonnement dans la liste
+        /// </summary>
         private void DgvComRevueUn_SelectionChanged(object sender, EventArgs e)
         {
             bloquerGesEtape = true;
@@ -3074,6 +3049,9 @@ namespace MediaTekDocuments.view
             bloquerGesEtape = false;
         }
 
+        /// <summary>
+        /// Réinitialise les zones d'affichage des détails d'abonnement
+        /// </summary>
         private void VideComRevueUnInfos()
         {
             if (!ajouterBool)
@@ -3085,9 +3063,11 @@ namespace MediaTekDocuments.view
             dtpRevueFinAbonnement.Value = DateTime.Today;
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton d'ajout d'abonnement
+        /// </summary>
         private void btnRevueComAjouter_Click(object sender, EventArgs e)
         {
-            
             ModifComRevue(false);
             dtpRevueDateCommande.Enabled = false;
             ajouterBool = true;
@@ -3122,6 +3102,9 @@ namespace MediaTekDocuments.view
             }
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de modification d'abonnement
+        /// </summary>
         private void btnRevueComModifier_Click(object sender, EventArgs e)
         {
             ajouterBool = false;
@@ -3130,6 +3113,10 @@ namespace MediaTekDocuments.view
             dtpRevueDateCommande.Enabled = false;
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de validation
+        /// Gère la validation selon le contexte (ajout/modification/suppression)
+        /// </summary>
         private void btnRevueComValider_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Êtes-vous sûr de vouloir valider cette action ?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -3176,6 +3163,9 @@ namespace MediaTekDocuments.view
             ModifComRevue(true);
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton d'annulation
+        /// </summary>
         private void btnRevueComAnnuler_Click(object sender, EventArgs e)
         {
             ajouterBool = false;
@@ -3186,6 +3176,10 @@ namespace MediaTekDocuments.view
             RemplirComRevueDetails(comListMaj);
         }
 
+        /// <summary>
+        /// Événement de clic sur le bouton de suppression d'abonnement
+        /// Vérifie qu'il n'y a pas d'exemplaires associés avant suppression
+        /// </summary>
         private void btnRevueComSupprimer_Click(object sender, EventArgs e)
         {
             if (dgvComRevueUne.CurrentCell != null)
@@ -3223,13 +3217,17 @@ namespace MediaTekDocuments.view
             }
         }
 
-
-
+        /// <summary>
+        /// Vérifie si un exemplaire est compris dans la période d'abonnement
+        /// </summary>
         private bool ParutionDansAbonnement(DateTime dateCommande, DateTime DateFinAbonnement, DateTime dateParution)
         {
-            return dateParution >= dateCommande && dateParution <= DateFinAbonnement; 
+            return dateParution >= dateCommande && dateParution <= DateFinAbonnement;
         }
 
+        /// <summary>
+        /// Affiche les abonnements arrivant à expiration dans moins de 30 jours
+        /// </summary>
         public void VerifTempsAbo()
         {
             if (serviceUtili == "administrateur" || serviceUtili == "administratif")
@@ -3261,6 +3259,7 @@ namespace MediaTekDocuments.view
                 }
             }
         }
+
         #endregion
     }
 }
