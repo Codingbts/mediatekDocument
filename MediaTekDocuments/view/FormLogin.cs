@@ -67,7 +67,7 @@ namespace MediaTekDocuments.view
                 {
                     if(loginEcrit == loginBDD)
                     {
-                        if(VerifPassword(passwordEcrit, passwordBdd) == true)
+                        if(VerifPassword(passwordEcrit, passwordBdd))
                         {
                             MessageBox.Show("Connexion réussi.");
                             this.Hide();
