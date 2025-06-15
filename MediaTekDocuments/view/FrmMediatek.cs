@@ -633,16 +633,16 @@ namespace MediaTekDocuments.view
                 try
                 {
                     Dvd dvd = (Dvd)bdgComDvdListe.List[bdgComDvdListe.Position];
-                    AfficheComDvdInfos(dvd);
+                    AfficheDvdInfos(dvd);
                 }
                 catch
                 {
-                    VideComDvdZones();
+                    VideDvdZones();
                 }
             }
             else
             {
-                VideComDvdInfos();
+                VideDvdInfos();
             }
         }
 
@@ -1539,7 +1539,7 @@ namespace MediaTekDocuments.view
                     List<CommandeDocument> comDoc = controller.GetCommandeDocument(livre.Id);
                     RemplirComLivresDetails(comDoc);
 
-                    if (ajouterBool == true)
+                    if (ajouterBool)
                     {
                         ModifComLivre(true);
                         ajouterBool = false;
@@ -1550,7 +1550,7 @@ namespace MediaTekDocuments.view
                         
                     }
 
-                    if (supprComLivre == true)
+                    if (supprComLivre)
                     {
                         supprComLivre = false;
                         List<CommandeDocument> comDocSuppr = controller.GetCommandeDocument(livre.Id);
@@ -1558,7 +1558,7 @@ namespace MediaTekDocuments.view
                         ModifComLivre(true);
                     }
                     
-                    if (modifBool == true)
+                    if (modifBool)
                     {
                         modifBool = false;
                         List<CommandeDocument> comDocSuppr = controller.GetCommandeDocument(livre.Id);
@@ -1720,7 +1720,7 @@ namespace MediaTekDocuments.view
 
         private void VideComLivreUnInfos()
         {
-            if (ajouterBool == false)
+            if (!ajouterBool)
             {
                 txbLivresComNbCommande.Text = "";
             }
@@ -1732,7 +1732,7 @@ namespace MediaTekDocuments.view
 
         private void AjoutUpCommandeLivre(CommandeDocument commandeDocument)
         {
-            if (ajouterBool == true)
+            if (ajouterBool)
             {
 
                 bool commandeCreer = controller.CreerCommandeDocument(commandeDocument);
@@ -1744,12 +1744,12 @@ namespace MediaTekDocuments.view
                 }
 
             }
-            else if(ajouterBool == false)
+            else if(!ajouterBool)
             {
                 try
                 {
                     bloquerGesEtape = true;
-                    bool commandeUpdate = controller.UpdateCommandeDocument(commandeDocument);
+                    controller.UpdateCommandeDocument(commandeDocument);
                     MessageBox.Show("Modification de la commande effectué");
                     
                 }
@@ -1836,7 +1836,7 @@ namespace MediaTekDocuments.view
             if (nvEtape < ancienneEtapeSuivi && ancienneEtapeSuivi >= 2)
             {
 
-                if (msgBoxSuivi==true)
+                if (msgBoxSuivi)
                 { 
                 MessageBox.Show("Il est impossible de sélectionner une étape antérieure à l'étape actuel.");
                 cbxLivresComEtapeSuivi.SelectedIndex = ancienneEtapeSuivi;
@@ -1857,7 +1857,7 @@ namespace MediaTekDocuments.view
         {
             bloquerGesEtape = true;
 
-            if (supprComLivre == true)
+            if (supprComLivre)
             {
                 if (MessageBox.Show("Etes vous sur de vouloir supprimer cette commande ?", "oui ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
@@ -1867,7 +1867,7 @@ namespace MediaTekDocuments.view
                         if (comListeDelete.IdSuivi <= 2)
                         {
                             bool resultDelete = controller.DeleteCommandeDoc(comListeDelete);
-                            if (resultDelete == true)
+                            if (resultDelete)
                             {
                                 MessageBox.Show("Commande supprimé");
                                 VideComLivreUnInfos();
@@ -1894,7 +1894,7 @@ namespace MediaTekDocuments.view
                 if (MessageBox.Show("Etes vous sur de faire cette action ?", "oui ?", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     string id = txbLivresComNbCommande.Text;
-                    DateTime dateCommande = dtpLivresComDateCommande.Value; ;
+                    DateTime dateCommande = dtpLivresComDateCommande.Value;
                     float montant = float.TryParse(txbLivresComMontant.Text, out _) ? float.Parse(txbLivresComMontant.Text) : -1;
                     int nbExemplaire = int.TryParse(txbLivresComNbExemplaires.Text, out _) ? int.Parse(txbLivresComNbExemplaires.Text) : -1;
                     string idLivreDvd = txbLivresComNumLivre.Text;
@@ -1912,7 +1912,7 @@ namespace MediaTekDocuments.view
                     {
                         CommandeDocument commandeLivre = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idLivreDvd, idSuivi, etapeSuivi);
                         AjoutUpCommandeLivre(commandeLivre);
-                        if(ajouterBool == true)
+                        if(ajouterBool)
                         {
                             ajouterBool = false;
                         }
@@ -2206,7 +2206,7 @@ namespace MediaTekDocuments.view
                     List<CommandeDocument> comDoc = controller.GetCommandeDocument(dvd.Id);
                     RemplirComDVDDetails(comDoc);
 
-                    if (ajouterBool == true)
+                    if (ajouterBool)
                     {
                         ModifComDVD(true);
                         ajouterBool = false;
@@ -2217,7 +2217,7 @@ namespace MediaTekDocuments.view
 
                     }
 
-                    if (supprComDVD == true)
+                    if (supprComDVD)
                     {
                         supprComDVD = false;
                         List<CommandeDocument> comDocSuppr = controller.GetCommandeDocument(dvd.Id);
@@ -2225,7 +2225,7 @@ namespace MediaTekDocuments.view
                         ModifComDVD(true);
                     }
 
-                    if (modifBool == true)
+                    if (modifBool)
                     {
                         modifBool = false;
                         List<CommandeDocument> comDocSuppr = controller.GetCommandeDocument(dvd.Id);
@@ -2426,7 +2426,7 @@ namespace MediaTekDocuments.view
 
         private void VideComDVDUnInfos()
         {
-            if (ajouterBool == false)
+            if (!ajouterBool)
             {
                 txbDVDComNbCommande.Text = "";
             }
@@ -2438,7 +2438,7 @@ namespace MediaTekDocuments.view
 
         private void AjoutUpCommandeDVD(CommandeDocument commandeDocument)
         {
-            if (ajouterBool == true)
+            if (ajouterBool)
             {
                 bool commandeCreer = controller.CreerCommandeDocument(commandeDocument);
                 MessageBox.Show("Ajout de la nouvelle commande");
@@ -2448,12 +2448,12 @@ namespace MediaTekDocuments.view
                     MessageBox.Show("Erreur lors de la création de la commande");
                 }
             }
-            else if (ajouterBool == false)
+            else if (!ajouterBool)
             {
                 try
                 {
                     bloquerGesEtape = true;
-                    bool commandeUpdate = controller.UpdateCommandeDocument(commandeDocument);
+                    controller.UpdateCommandeDocument(commandeDocument);
                     MessageBox.Show("Modification de la commande effectuée");
                 }
                 catch
@@ -2525,7 +2525,7 @@ namespace MediaTekDocuments.view
         {
             bloquerGesEtape = true;
 
-            if (supprComDVD == true)
+            if (supprComDVD)
             {
                 if (MessageBox.Show("Êtes-vous sûr de vouloir supprimer cette commande ?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
@@ -2535,7 +2535,7 @@ namespace MediaTekDocuments.view
                         if (comListeDelete.IdSuivi <= 2)
                         {
                             bool resultDelete = controller.DeleteCommandeDoc(comListeDelete);
-                            if (resultDelete == true)
+                            if (resultDelete)
                             {
                                 MessageBox.Show("Commande supprimée");
                                 VideComDVDUnInfos();
@@ -2580,7 +2580,7 @@ namespace MediaTekDocuments.view
                     {
                         CommandeDocument commandeDVD = new CommandeDocument(id, dateCommande, montant, nbExemplaire, idLivreDvd, idSuivi, etapeSuivi);
                         AjoutUpCommandeDVD(commandeDVD);
-                        if (ajouterBool == true)
+                        if (ajouterBool)
                         {
                             ajouterBool = false;
                         }
@@ -2863,7 +2863,7 @@ namespace MediaTekDocuments.view
                     List<Abonnement> comRevue = controller.GetCommandeRevue(revue.Id);
                     RemplirComRevueDetails(comRevue);
 
-                    if (ajouterBool == true)
+                    if (ajouterBool)
                     {
                         ModifComRevue(true);
                         ajouterBool = false;
@@ -2874,7 +2874,7 @@ namespace MediaTekDocuments.view
 
                     }
 
-                    if (supprComRevue == true)
+                    if (supprComRevue)
                     {
                         supprComRevue = false;
                         List<Abonnement> comAboSuppr = controller.GetCommandeRevue(revue.Id);
@@ -2882,7 +2882,7 @@ namespace MediaTekDocuments.view
                         ModifComRevue(true);
                     }
 
-                    if (modifBool == true)
+                    if (modifBool)
                     {
                         modifBool = false;
                         List<Abonnement> comAboSuppr = controller.GetCommandeRevue(revue.Id);
@@ -3076,7 +3076,7 @@ namespace MediaTekDocuments.view
 
         private void VideComRevueUnInfos()
         {
-            if (ajouterBool == false)
+            if (!ajouterBool)
             {
                 txbRevueComNbAbonnement.Text = "";
             }
@@ -3144,7 +3144,7 @@ namespace MediaTekDocuments.view
                 {
                     Abonnement abonnement = new Abonnement(id, dateCommande, montant, dateFinAbonnement, idRevue);
 
-                    if (ajouterBool == true)
+                    if (ajouterBool)
                     {
                         bool commandeCreer = controller.CreerAbonnement(abonnement);
                         MessageBox.Show("Ajout de la nouvelle commande");
@@ -3159,7 +3159,7 @@ namespace MediaTekDocuments.view
                     {
                         try
                         {
-                            bool commandeUpdate = controller.UpdateAbonnement(abonnement);
+                            controller.UpdateAbonnement(abonnement);
                             MessageBox.Show("Modification de la commande effectuée");
                         }
                         catch
@@ -3196,7 +3196,7 @@ namespace MediaTekDocuments.view
                 List<Exemplaire> recupDateParution = controller.GetExemplairesRevue(AboRecup.IdRevue);
                 bool exemplaireDansAbonnement = recupDateParution.Any(exp => ParutionDansAbonnement(dateCommande, DateFinAbonnement, exp.DateAchat));
 
-                if (exemplaireDansAbonnement == false)
+                if (!exemplaireDansAbonnement)
                 {
                     if (MessageBox.Show("Êtes-vous sûr de vouloir supprimer cette commande ?", "Confirmation", MessageBoxButtons.YesNo) == DialogResult.Yes)
                     {
@@ -3243,7 +3243,6 @@ namespace MediaTekDocuments.view
                     List<Abonnement> getAboRevue = controller.GetCommandeRevue(revue.Id);
                     foreach (Abonnement abo in getAboRevue)
                     {
-                        DateTime dateCommande = abo.DateCommande;
                         DateTime dateFinAbonnement = abo.DateFinAbonnement;
 
                         TimeSpan tmpsRestant = dateFinAbonnement - DateTime.Today;
@@ -3256,7 +3255,7 @@ namespace MediaTekDocuments.view
                     }
                 }
 
-                if (moins30j == true)
+                if (moins30j)
                 {
                     MessageBox.Show(msg30);
                 }

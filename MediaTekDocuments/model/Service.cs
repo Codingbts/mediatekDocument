@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MediaTekDocuments.model
 {
-    class Service
+    public class Service
     {
         public int Id;
         public string Libelle;
